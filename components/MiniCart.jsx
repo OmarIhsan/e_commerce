@@ -2,6 +2,7 @@
 import { useCart } from "@/lib/cartStore";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { findBySku } from "@/lib/mockData";
 
 export default function MiniCart() {
   const [open, setOpen] = useState(false);
@@ -68,34 +69,46 @@ export default function MiniCart() {
       {open && (
         <>
           <div className="fixed inset-0 bg-black/30 z-40" aria-hidden onClick={() => setOpen(false)} />
-          <div role="dialog" id="mini-cart" aria-label="Mini cart" className="fixed right-4 top-14 z-50 w-80 rounded-soft border border-mist bg-paper shadow" ref={panelRef}>
-            <div className="p-4">
-              <div className="flex items-center justify-between">
+          <div role="dialog" id="mini-cart" aria-label="Mini cart" className="fixed right-4 top-14 z-50 w-96 rounded-soft bg-paper shadow-lg overflow-hidden" ref={panelRef}>
+            <div className="p-0">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-brandA-500 to-brandB-500 text-white">
                 <h2 className="font-semibold">Your Cart</h2>
                 <button onClick={() => setOpen(false)} aria-label="Close mini cart">✕</button>
               </div>
               {items.length === 0 ? (
-                <p className="text-ash text-sm">No items yet.</p>
+                <div className="p-4">
+                  <p className="text-ash text-sm">No items yet.</p>
+                </div>
               ) : (
-                <ul className="mt-3 space-y-3">
-                  {items.map(i => (
-                    <li key={`${i.sku}-${i.size || 'default'}`} className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm">{i.name}{i.size ? ` • ${i.size}` : ''}</div>
-                        <div className="text-xs text-ash">Qty {i.qty}</div>
-                      </div>
-                      <div className="text-sm font-medium">${(i.price * i.qty).toFixed(2)}</div>
-                    </li>
-                  ))}
+                <ul className="p-4 space-y-3">
+                  {items.map(i => {
+                    const prod = findBySku(i.sku);
+                    return (
+                      <li key={`${i.sku}-${i.size || 'default'}`} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-subtle overflow-hidden bg-mist">
+                            <img src={prod?.images?.[0] || '/placeholder-1.jpg'} alt={i.name} className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <div className="text-sm">{i.name}{i.size ? ` • ${i.size}` : ''}</div>
+                            <div className="text-xs text-ash">Qty {i.qty}</div>
+                          </div>
+                        </div>
+                        <div className="text-sm font-medium">${(i.price * i.qty).toFixed(2)}</div>
+                      </li>
+                    );
+                  })}
                 </ul>
               )}
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-sm text-ash">Subtotal</span>
-                <span className="font-semibold">${subtotal().toFixed(2)}</span>
-              </div>
-              <div className="mt-4 flex gap-3">
-                <Link href="/cart" className="rounded-subtle bg-slate text-paper px-3 py-2 text-sm">View Cart</Link>
-                <Link href="/checkout" className="rounded-subtle bg-indigo text-paper px-3 py-2 text-sm">Checkout</Link>
+              <div className="border-t p-4 flex items-center justify-between">
+                <div>
+                  <div className="text-sm text-ash">Subtotal</div>
+                  <div className="font-semibold text-lg">${subtotal().toFixed(2)}</div>
+                </div>
+                <div className="flex gap-3">
+                  <Link href="/cart" className="rounded-subtle bg-slate text-paper px-3 py-2 text-sm">View Cart</Link>
+                  <Link href="/checkout" className="rounded-subtle btn-brand text-sm">Checkout</Link>
+                </div>
               </div>
             </div>
           </div>

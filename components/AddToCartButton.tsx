@@ -4,7 +4,7 @@ import { useCart } from "@/lib/cartStore";
 export default function AddToCartButton({ product, size }: { product: any; size?: string }) {
   const add = useCart(state => state.add);
   return (
-    <button className="mt-4 rounded-subtle bg-indigo text-paper px-4 py-2" onClick={() => add(product, 1, size)}>
+    <button onClick={() => add(product, 1, size)} className="mt-4 btn-brand hover:opacity-95">
       Add to Cart{size ? ` • ${size}` : ''}
     </button>
   );

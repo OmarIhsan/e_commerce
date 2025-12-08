@@ -11,17 +11,19 @@ export default function ProductPage({ params }: { params: { sku: string } }) {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <ProductGallery />
+      <ProductGallery images={product.images} />
       <div>
-        <h1 className="text-2xl font-semibold">{product.name}</h1>
-        <div className="text-ash text-sm">SKU {product.sku}</div>
-        <div className="mt-2 text-xl font-semibold">${product.price}</div>
-        <p className="mt-4 text-ash">Premium materials and timeless design. Returns within 30 days.</p>
-        <div className="mt-4">
-          <h2 className="font-semibold">Reviews</h2>
-          <p className="text-sm text-ash">Average {product.rating ?? 4.5} from {product.reviewsCount ?? 0} reviews.</p>
+        <div className="card p-6">
+          <h1 className="text-2xl font-semibold">{product.name}</h1>
+          <div className="text-ash text-sm">SKU {product.sku}</div>
+          <div className="mt-2 text-2xl font-extrabold">${product.price}</div>
+          <p className="mt-4 text-ash">{product.description ?? 'Premium materials and timeless design.'}</p>
+          <div className="mt-4">
+            <h2 className="font-semibold">Reviews</h2>
+            <p className="text-sm text-ash">Average {product.rating ?? 4.5} from {product.reviewsCount ?? 0} reviews.</p>
+          </div>
+          <ProductActions product={product} />
         </div>
-        <ProductActions product={product} />
         <script type="application/ld+json" suppressHydrationWarning>
           {JSON.stringify({
             '@context': 'https://schema.org',
