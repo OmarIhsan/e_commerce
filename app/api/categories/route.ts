@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { categories } from "@/lib/mockData";
+import { fetchPlatziCategories } from "@/lib/platziApi";
 
 export async function GET() {
+  const categories = await fetchPlatziCategories();
   return NextResponse.json({ categories });
 }

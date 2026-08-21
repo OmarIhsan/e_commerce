@@ -38,10 +38,10 @@ export default function Header() {
             </div>
             <div className="flex flex-col">
               <span className="font-mono text-sm font-black tracking-widest text-titanium-100 uppercase">
-                TITAN<span className="text-cyber-cyan">.LAB</span>
+                E-COMMERCE <span className="text-cyber-cyan">BY OMAR</span>
               </span>
               <span className="font-mono text-[9px] tracking-wider text-titanium-400 uppercase">
-                PRECISION COMMERCE
+                ONLINE STORE
               </span>
             </div>
           </Link>

@@ -79,7 +79,7 @@ export default function InvoiceView({ order }: InvoiceProps) {
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-cyber-cyan print:text-black font-black text-lg tracking-widest uppercase">
               <Zap className="w-5 h-5" />
-              <span>TITAN.LAB PRECISION COMMERCE</span>
+              <span>E-COMMERCE BY OMAR</span>
             </div>
             <p className="text-[11px] text-titanium-400 print:text-neutral-600">
               Tax ID: US-VAT-9402198 • Global Fulfillment Hub 01
@@ -238,7 +238,7 @@ export default function InvoiceView({ order }: InvoiceProps) {
 
         {/* Footer Note */}
         <div className="text-[10px] text-titanium-500 print:text-neutral-500 border-t border-white/5 print:border-neutral-200 pt-4 text-center">
-          Thank you for choosing TITAN.LAB. For returns or support inquiries, quote Order ID #{order.orderId}.
+          Thank you for choosing E-Commerce by Omar. For returns or support inquiries, quote Order ID #{order.orderId}.
         </div>
       </div>
     </div>

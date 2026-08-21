@@ -1,4 +1,4 @@
-import { findBySku, products, Product } from "@/lib/mockData";
+import { fetchPlatziProductBySku, fetchPlatziProducts } from "@/lib/platziApi";
 import type { Metadata } from "next";
 import ProductGallery from "@/components/ProductGallery";
 import ProductActions from "@/components/ProductActions";
@@ -15,15 +15,15 @@ interface ProductPageProps {
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  const product = findBySku(params.sku);
+  const product = await fetchPlatziProductBySku(params.sku);
   if (!product) {
     return {
-      title: "Product Not Found | TITAN.LAB",
+      title: "Product Not Found | Store",
     };
   }
 
   return {
-    title: `${product.name} | ${product.brand} - TITAN.LAB`,
+    title: `${product.name} | ${product.brand} - Store`,
     description: product.description,
     openGraph: {
       title: `${product.name} - ${formatCurrency(product.price)}`,
@@ -41,15 +41,15 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default function ProductDetailPage({ params }: ProductPageProps) {
-  const product = findBySku(params.sku);
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  const product = await fetchPlatziProductBySku(params.sku);
 
   if (!product) {
     notFound();
   }
 
-  // Related products from the same category or overall catalog
-  const relatedProducts = products
+  const allProducts = await fetchPlatziProducts();
+  const relatedProducts = allProducts
     .filter((p) => p.sku !== product.sku)
     .slice(0, 4);
 
@@ -62,213 +62,160 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
         <Link
-          href={`/?category=${product.category}`}
-          className="uppercase hover:text-cyber-cyan transition-colors"
+          href={`/category/${product.category}`}
+          className="hover:text-cyber-cyan transition-colors uppercase"
         >
           {product.category}
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
-        <span className="text-titanium-200 truncate max-w-[200px] sm:max-w-none">
+        <span className="text-titanium-100 uppercase font-bold truncate max-w-xs">
           {product.name}
         </span>
       </nav>
 
-      {/* Main PDP Grid */}
+      {/* Main Product Layout: 2 Columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Column: Interactive Zoom Gallery */}
-        <div className="lg:col-span-7">
+        {/* Left Column: Gallery */}
+        <div className="lg:col-span-7 space-y-6">
           <ProductGallery images={product.images} productName={product.name} />
+
+          {/* Desktop Product Description & Specs Accordion */}
+          <div className="hidden lg:block space-y-6 pt-6 border-t border-white/10">
+            <div className="space-y-3">
+              <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200 flex items-center gap-2">
+                <Layers className="w-4 h-4 text-cyber-cyan" />
+                OVERVIEW
+              </h3>
+              <p className="text-sm text-titanium-300 leading-relaxed">
+                {product.longDescription || product.description}
+              </p>
+            </div>
+
+            {product.specs && (
+              <div className="space-y-3 pt-4 border-t border-white/5">
+                <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-cyber-cyan" />
+                  PRODUCT DETAILS
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  {Object.entries(product.specs).map(([key, val]) => (
+                    <div
+                      key={key}
+                      className="p-3 rounded-subtle bg-white/5 border border-white/5 space-y-0.5"
+                    >
+                      <div className="font-mono text-[10px] text-titanium-400 uppercase">{key}</div>
+                      <div className="font-mono text-titanium-200 font-semibold">{val}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Right Column: Information, Specs, Variants, Cart Actions */}
+        {/* Right Column: Information & Add to Cart Container */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="glass-panel p-6 sm:p-8 rounded-card space-y-6">
-            {/* Header Telemetry */}
-            <div>
-              <div className="flex items-center justify-between gap-2 text-xs font-mono mb-2">
-                <span className="text-cyber-cyan font-bold tracking-widest uppercase">
-                  {product.brand}
-                </span>
-                <span className="text-titanium-400">SKU: {product.sku}</span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-titanium-100 leading-tight">
-                {product.name}
-              </h1>
-
-              {/* Rating & Reviews pill */}
-              <div className="flex items-center gap-3 mt-3">
-                <div className="flex items-center gap-1.5 text-cyber-amber text-xs font-mono bg-white/5 px-2.5 py-1 rounded-subtle border border-white/5">
-                  <Star className="w-3.5 h-3.5 fill-cyber-amber text-cyber-amber" />
-                  <span className="font-bold">{product.rating.toFixed(1)}</span>
-                  <span className="text-titanium-500">({product.reviewsCount} reviews)</span>
-                </div>
-
-                <div className="text-[11px] font-mono text-cyber-emerald flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-cyber-emerald"></span>
-                  {product.inventory > 5 ? `${product.inventory} UNITS VERIFIED IN STOCK` : `LOW STOCK: ONLY ${product.inventory} REMAINING`}
-                </div>
-              </div>
-            </div>
-
-            {/* Price & Discounts */}
-            <div className="flex items-baseline gap-3 pt-2 border-t border-white/5">
-              <span className="font-mono text-3xl font-black text-titanium-100">
-                {formatCurrency(product.price)}
+          {/* Header Metadata */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-mono text-xs font-bold text-cyber-cyan uppercase tracking-wider">
+                {product.brand}
               </span>
-              {product.compareAt && (
-                <span className="font-mono text-sm text-titanium-500 line-through">
-                  {formatCurrency(product.compareAt)}
-                </span>
-              )}
-              {product.discount && product.discount > 0 && (
-                <span className="rounded-subtle bg-cyber-rose/20 text-cyber-rose border border-cyber-rose/30 px-2 py-0.5 text-xs font-mono font-bold">
-                  SAVE {product.discount}%
-                </span>
-              )}
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-pill bg-white/5 border border-white/10 text-xs font-mono text-titanium-300">
+                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                <span>{product.rating.toFixed(1)}</span>
+                <span className="text-titanium-500">({product.reviewsCount})</span>
+              </div>
             </div>
 
-            {/* Description */}
-            <p className="text-sm text-titanium-300 leading-relaxed">
-              {product.longDescription || product.description}
-            </p>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-titanium-100 tracking-tight leading-tight">
+              {product.name}
+            </h1>
 
-            {/* Interactive Actions (Sizes, Qty, Add to Cart) */}
-            <ProductActions product={product} />
+            <div className="font-mono text-xs text-titanium-500">
+              SKU: <span className="text-titanium-300">{product.sku}</span>
+            </div>
           </div>
 
-          {/* Technical Specifications Accordion / Panel */}
-          {product.specs && (
-            <div className="glass-panel p-6 rounded-card space-y-4">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-titanium-200 uppercase tracking-wider">
-                <Layers className="w-4 h-4 text-cyber-cyan" />
-                <span>TECHNICAL SPECIFICATIONS &amp; ORIGIN</span>
-              </div>
+          {/* Pricing Block */}
+          <div className="p-4 rounded-card glass-panel border border-white/10 flex items-baseline gap-3">
+            <span className="text-3xl font-extrabold font-mono text-titanium-100">
+              {formatCurrency(product.price)}
+            </span>
+            {product.compareAt && (
+              <span className="text-sm font-mono text-titanium-500 line-through">
+                {formatCurrency(product.compareAt)}
+              </span>
+            )}
+            {product.discount && (
+              <span className="px-2 py-0.5 rounded-pill bg-cyber-magenta/15 border border-cyber-magenta/40 text-[10px] font-mono font-bold text-cyber-magenta uppercase tracking-wider">
+                Save {product.discount}%
+              </span>
+            )}
+          </div>
 
-              <div className="divide-y divide-white/5 text-xs font-mono">
-                {Object.entries(product.specs).map(([key, val]) => (
-                  <div key={key} className="py-2.5 flex items-center justify-between">
-                    <span className="text-titanium-400">{key}</span>
-                    <span className="text-titanium-200 font-semibold text-right">{String(val)}</span>
-                  </div>
-                ))}
+          {/* Interactive Variant Options & Add to Cart Client Component */}
+          <ProductActions product={product} />
+
+          {/* Guarantee Badges */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="p-3 rounded-subtle bg-white/5 border border-white/5 flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-cyber-emerald shrink-0" />
+              <div className="text-[11px] leading-tight text-titanium-300">
+                <span className="font-semibold text-titanium-100 block">Fast Delivery</span>
+                Dispatched in 24h
               </div>
             </div>
-          )}
+            <div className="p-3 rounded-subtle bg-white/5 border border-white/5 flex items-center gap-2.5">
+              <Sparkles className="w-4 h-4 text-cyber-cyan shrink-0" />
+              <div className="text-[11px] leading-tight text-titanium-300">
+                <span className="font-semibold text-titanium-100 block">Authentic Item</span>
+                Direct from API
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile Product Description */}
+          <div className="lg:hidden space-y-4 pt-6 border-t border-white/10">
+            <div className="space-y-2">
+              <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200">
+                OVERVIEW
+              </h3>
+              <p className="text-sm text-titanium-300 leading-relaxed">
+                {product.longDescription || product.description}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Customer Reviews & Quality Breakdown */}
-      <section className="glass-panel p-8 rounded-card space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
-          <div>
-            <h2 className="text-xl font-bold text-titanium-100">Customer Performance &amp; Reviews</h2>
-            <p className="text-xs font-mono text-titanium-400 mt-1">
-              Aggregated from verified field tests and purchaser evaluations.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-3xl font-mono font-black text-cyber-cyan">
-              {product.rating.toFixed(1)}
+      {/* Related Products Grid */}
+      {relatedProducts.length > 0 && (
+        <section className="space-y-6 pt-12 border-t border-white/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-extrabold text-titanium-100 tracking-tight">
+                Recommended Items
+              </h2>
+              <p className="text-xs font-mono text-titanium-400 mt-0.5">
+                Explore more curated products
+              </p>
             </div>
-            <div className="space-y-1">
-              <div className="flex text-cyber-amber">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-cyber-amber text-cyber-amber" />
-                ))}
-              </div>
-              <div className="text-[11px] font-mono text-titanium-400">
-                {product.reviewsCount} verified ratings
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Sample Customer Reviews */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-soft bg-titanium-900/60 border border-white/5 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-semibold text-titanium-200">Alex K. (Verified Buyer)</span>
-              <span className="text-[10px] font-mono text-titanium-500">2 days ago</span>
-            </div>
-            <div className="flex text-cyber-amber">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 fill-cyber-amber text-cyber-amber" />
-              ))}
-            </div>
-            <p className="text-xs text-titanium-300 leading-relaxed">
-              "Exceptional build quality and weight. The fabric feel and tailoring exceed the photos. Instant staple in my everyday rotation."
-            </p>
+            <Link
+              href="/"
+              className="text-xs font-mono text-cyber-cyan hover:underline flex items-center gap-1"
+            >
+              View Full Catalog <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
 
-          <div className="p-4 rounded-soft bg-titanium-900/60 border border-white/5 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-semibold text-titanium-200">Marcus T. (Verified Buyer)</span>
-              <span className="text-[10px] font-mono text-titanium-500">1 week ago</span>
-            </div>
-            <div className="flex text-cyber-amber">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3 h-3 fill-cyber-amber text-cyber-amber" />
-              ))}
-            </div>
-            <p className="text-xs text-titanium-300 leading-relaxed">
-              "Sub-second checkout was super smooth. The hardware and materials are truly top notch. Highly recommended."
-            </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {relatedProducts.map((rel) => (
+              <ProductCard key={rel.sku} product={rel} />
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* Related Products */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-bold text-titanium-100">Engineered Combinations</h2>
-            <p className="text-xs font-mono text-titanium-400">Complete the setup with matched tactical gear.</p>
-          </div>
-          <Link href="/" className="text-xs font-mono text-cyber-cyan hover:underline">
-            View All &rarr;
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {relatedProducts.map((p) => (
-            <ProductCard key={p.sku} product={p} viewMode="grid" />
-          ))}
-        </div>
-      </section>
-
-      {/* Schema.org Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            name: product.name,
-            sku: product.sku,
-            image: product.images,
-            description: product.description,
-            brand: {
-              "@type": "Brand",
-              name: product.brand,
-            },
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "USD",
-              price: product.price,
-              availability:
-                product.inventory > 0
-                  ? "https://schema.org/InStock"
-                  : "https://schema.org/OutOfStock",
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating,
-              reviewCount: product.reviewsCount,
-            },
-          }),
-        }}
-      />
+        </section>
+      )}
     </div>
   );
 }

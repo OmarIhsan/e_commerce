@@ -7,18 +7,18 @@ import Link from "next/link";
 import { ShieldCheck, Cpu, Terminal, Sparkles, ArrowUpRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "TITAN.LAB | High-Precision E-Commerce Platform",
-  description: "Flagship production-grade precision commerce catalog with sub-second optimistic updates, faceted search, and simulated payment gateways.",
+  title: "E-Commerce by Omar | Modern Online Store",
+  description: "Modern online store featuring live products from Platzi Fake Store API, instant cart management, and seamless checkout flow.",
   openGraph: {
-    title: "TITAN.LAB | High-Precision E-Commerce Platform",
-    description: "Production-grade e-commerce engineering showcase featuring instantaneous filtering, optimistic Zustand cart, and simulated checkout state machine.",
-    siteName: "TITAN.LAB",
+    title: "E-Commerce by Omar | Modern Online Store",
+    description: "Modern full-stack online store built with Next.js, TypeScript, and Tailwind CSS. Powered by Platzi Fake Store API.",
+    siteName: "E-Commerce by Omar",
     images: [
       {
         url: "https://images.unsplash.com/photo-1544441893-675973e31985?w=1200&q=85&auto=format&fit=crop",
         width: 1200,
         height: 630,
-        alt: "TITAN.LAB Flagship Store",
+        alt: "E-Commerce by Omar Storefront",
       },
     ],
     locale: "en_US",
@@ -26,8 +26,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "TITAN.LAB | Precision Commerce",
-    description: "Flagship portfolio platform with sub-second latency.",
+    title: "E-Commerce by Omar",
+    description: "Modern online storefront powered by Platzi Fake Store API.",
   },
 };
 
@@ -66,7 +66,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         <Cpu className="w-3.5 h-3.5 text-cyber-cyan" />
                       </div>
                     </div>
-                    <span className="font-bold text-titanium-100 tracking-wider text-sm">TITAN.LAB</span>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-titanium-100 tracking-wider text-sm">E-COMMERCE BY OMAR</span>
+                      <span className="text-[10px] text-titanium-400 font-mono">ONLINE STORE</span>
+                    </div>
                   </div>
                   <p className="text-[11px] text-titanium-400 leading-relaxed">
                     Flagship precision e-commerce platform demonstrating sub-second state synchronization, optimistic UX, and automated order invoice state machines.
@@ -116,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-titanium-500">
-                <p>© {new Date().getFullYear()} TITAN.LAB Precision Commerce. Portfolio Engineering Prototype.</p>
+                <p>© {new Date().getFullYear()} E-Commerce by Omar. Portfolio Project.</p>
                 <div className="flex items-center gap-6">
                   <Link href="/cart" className="hover:text-titanium-300 transition-colors">Cart</Link>
                   <Link href="/checkout" className="hover:text-titanium-300 transition-colors">Checkout Funnel</Link>
