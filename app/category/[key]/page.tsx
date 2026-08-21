@@ -1,97 +1,77 @@
-import { findByCategory, categories } from "@/lib/mockData";
+import { searchProducts, categories, Product } from "@/lib/mockData";
+import ProductCard from "@/components/ProductCard";
 import Link from "next/link";
-import { Suspense } from "react";
+import { ArrowLeft, ChevronRight, SlidersHorizontal, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-  title: "Category — E‑Commerce Portfolio",
-  description: "Browse curated products with filters and sorting.",
-};
+export async function generateMetadata({ params }: { params: { key: string } }): Promise<Metadata> {
+  const cat = categories.find((c) => c.id === params.key);
+  const name = cat ? cat.label : params.key.replace(/-/g, " ");
+  return {
+    title: `${name} Collection | TITAN.LAB`,
+    description: `High-precision curated ${name} apparel and EDC tactical gear.`,
+  };
+}
 
-export default function CategoryPage({ params, searchParams }: { params: { key: string }, searchParams?: Record<string, string | string[]> }) {
+export default function CategoryPage({
+  params,
+}: {
+  params: { key: string };
+}) {
   const key = params.key;
-  const valid = categories.includes(key);
-  let items = valid ? findByCategory(key) : [];
-
-  // Read sort and filters from URL
-  const sortParam = typeof searchParams?.sort === "string" ? searchParams!.sort : "name";
-  const priceBand = typeof searchParams?.price === "string" ? searchParams!.price : ""; // low|mid|high
-  const flag = typeof searchParams?.flag === "string" ? searchParams!.flag : ""; // new|best|under50
-
-  // Filter by price bands
-  items = items.filter(p => {
-    if (priceBand === "low") return p.price < 30;
-    if (priceBand === "mid") return p.price >= 30 && p.price <= 80;
-    if (priceBand === "high") return p.price > 80;
-    return true;
-  });
-
-  // Filter by flags
-  items = items.filter(p => {
-    if (!flag) return true;
-    const flags = (p.flags || []).map(f => f.toLowerCase());
-    if (flag === "new") return flags.includes("new");
-    if (flag === "best") return flags.includes("best");
-    if (flag === "under50") return flags.includes("under50");
-    return true;
-  });
-
-  // Sort
-  const sort = sortParam;
-  items = items.slice().sort((a, b) => {
-    if (sort === "price-asc") return a.price - b.price;
-    if (sort === "price-desc") return b.price - a.price;
-    return a.name.localeCompare(b.name);
-  });
+  const matchedCategory = categories.find((c) => c.id.toLowerCase() === key.toLowerCase());
+  const items = searchProducts(undefined, key);
 
   return (
-    <section className="space-y-6">
-      <header className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-semibold capitalize">{key.replace(/-/g, " ")}</h1>
-        <div className="text-ash text-sm">{items.length} products</div>
-      </header>
+    <div className="space-y-8">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-xs font-mono text-titanium-400">
+        <Link href="/" className="hover:text-cyber-cyan transition-colors flex items-center gap-1">
+          <ArrowLeft className="w-3 h-3" /> CATALOG
+        </Link>
+        <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
+        <span className="text-titanium-100 uppercase font-bold">
+          {matchedCategory ? matchedCategory.label : key.replace(/-/g, " ")}
+        </span>
+      </nav>
 
-      {!valid && (
-        <p className="text-danger">Category not found.</p>
-      )}
-
-      {valid && (
-        <>
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-ash flex items-center gap-4">
-              <span>Price:</span>
-              <Link href={`?price=low&sort=${sort}`} className="hover:underline">Low</Link>
-              <Link href={`?price=mid&sort=${sort}`} className="hover:underline">Mid</Link>
-              <Link href={`?price=high&sort=${sort}`} className="hover:underline">High</Link>
-              <Link href={`?`} className="hover:underline">Reset</Link>
-            </div>
-            <div className="text-sm flex items-center gap-2">
-              <span className="text-ash">Flags:</span>
-              <Link href={`?flag=new&sort=${sort}`} className="hover:underline">New</Link>
-              <Link href={`?flag=best&sort=${sort}`} className="hover:underline">Best</Link>
-              <Link href={`?flag=under50&sort=${sort}`} className="hover:underline">Under50</Link>
-            </div>
-            <div className="text-sm">
-              <span className="mr-2 text-ash">Sort</span>
-              <Link href={`?sort=name`} className="mr-2 hover:underline">Name</Link>
-              <Link href={`?sort=price-asc`} className="mr-2 hover:underline">Price ↑</Link>
-              <Link href={`?sort=price-desc`} className="hover:underline">Price ↓</Link>
-            </div>
+      {/* Header Banner */}
+      <div className="glass-panel p-8 rounded-card border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-subtle bg-white/5 border border-white/10 text-[10px] font-mono text-cyber-cyan uppercase tracking-wider mb-2">
+            <Sparkles className="w-3 h-3" /> CATEGORY INDEX
           </div>
-          <Suspense fallback={<p className="text-ash">Loading…</p>}>
-            <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {items.map(p => (
-                <li key={p.sku} className="border border-mist rounded-subtle p-4">
-                  <div className="font-medium">{p.name}</div>
-                  <div className="text-sm text-ash">SKU {p.sku}</div>
-                  <div className="mt-2 font-semibold">${p.price}</div>
-                  <Link href={`/product/${p.sku}`} className="mt-3 inline-block text-indigo hover:underline">View</Link>
-                </li>
-              ))}
-            </ul>
-          </Suspense>
-        </>
+          <h1 className="text-3xl font-extrabold text-titanium-100 uppercase tracking-tight">
+            {matchedCategory ? matchedCategory.label : key.replace(/-/g, " ")}
+          </h1>
+          <p className="text-xs font-mono text-titanium-400 mt-1">
+            Displaying {items.length} verified tactical items in this production line.
+          </p>
+        </div>
+
+        <Link
+          href={`/?category=${key}`}
+          className="px-4 py-2.5 rounded-subtle btn-cyber-primary font-mono text-xs uppercase tracking-wider font-bold flex items-center gap-2 self-start sm:self-auto shadow-glow"
+        >
+          <SlidersHorizontal className="w-3.5 h-3.5" /> Open Faceted Engine
+        </Link>
+      </div>
+
+      {/* Product Grid */}
+      {items.length === 0 ? (
+        <div className="glass-panel p-12 rounded-card text-center text-xs font-mono text-titanium-400 space-y-3">
+          <p>No products found in this category index.</p>
+          <Link href="/" className="text-cyber-cyan hover:underline">
+            &larr; Return to main catalog
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {items.map((product) => (
+            <ProductCard key={product.sku} product={product} viewMode="grid" />
+          ))}
+        </div>
       )}
-    </section>
+    </div>
   );
 }

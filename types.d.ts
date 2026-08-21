@@ -1,5 +1,4 @@
-declare module "@/components/MiniCart" {
-  import React from "react";
-  const MiniCart: React.ComponentType<any>;
-  export default MiniCart;
-}
+// Global TypeScript definitions
+
+export type Nullable<T> = T | null;
+export type AsyncResponse<T> = Promise<{ data: T; error?: string }>;
