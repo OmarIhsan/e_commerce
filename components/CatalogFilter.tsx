@@ -88,8 +88,8 @@ export default function CatalogFilter({
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search by title, SKU, brand, or specs..."
-            className="w-full pl-10 pr-10 py-2.5 rounded-soft titanium-input text-xs font-mono text-titanium-100 placeholder:text-titanium-500 shadow-inner"
+            placeholder="Search products, clothing, shoes, accessories..."
+            className="w-full pl-10 pr-10 py-2.5 rounded-lg titanium-input text-xs text-titanium-100 placeholder:text-titanium-500 shadow-inner border border-white/10"
           />
           {searchValue && (
             <button
@@ -109,16 +109,16 @@ export default function CatalogFilter({
           {/* Filter toggle button */}
           <button
             onClick={() => setIsFilterPanelOpen(!isFilterPanelOpen)}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-soft text-xs font-mono border transition-all ${
+            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs border transition-all ${
               isFilterPanelOpen || activeFilterCount > 0
-                ? "bg-cyber-cyan/10 border-cyber-cyan text-cyber-cyan font-bold"
-                : "btn-titanium text-titanium-300"
+                ? "bg-blue-600/20 border-blue-500 text-blue-400 font-semibold"
+                : "btn-titanium text-titanium-300 border-white/10"
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>FILTERS</span>
+            <span>Filters</span>
             {activeFilterCount > 0 && (
-              <span className="flex h-4 w-4 items-center justify-center rounded-pill bg-cyber-cyan text-titanium-950 text-[10px] font-bold">
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white text-[10px] font-bold">
                 {activeFilterCount}
               </span>
             )}
@@ -128,7 +128,7 @@ export default function CatalogFilter({
           <select
             value={sortParam}
             onChange={(e) => updateUrlParams({ sort: e.target.value })}
-            className="px-3 py-2.5 rounded-soft titanium-input text-xs font-mono text-titanium-200 cursor-pointer"
+            className="px-3 py-2.5 rounded-lg titanium-input text-xs text-titanium-200 cursor-pointer border border-white/10 bg-titanium-900"
           >
             <option value="featured">Sort: Featured</option>
             <option value="price-asc">Price: Low to High</option>
@@ -173,14 +173,14 @@ export default function CatalogFilter({
             <button
               key={cat.id}
               onClick={() => updateUrlParams({ category: cat.id === "all" ? null : cat.id })}
-              className={`px-3.5 py-1.5 rounded-pill text-xs font-mono whitespace-nowrap transition-all flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all flex items-center gap-1.5 ${
                 isActive
-                  ? "bg-gradient-to-r from-cyber-cyan/20 to-cyber-blue/20 border border-cyber-cyan text-cyber-cyan font-semibold shadow-glow"
-                  : "bg-white/[0.03] border border-white/5 text-titanium-300 hover:text-white hover:border-white/15"
+                  ? "bg-blue-600 text-white font-semibold shadow-sm"
+                  : "bg-titanium-900 border border-white/10 text-titanium-300 hover:text-white hover:border-white/20"
               }`}
             >
               <span>{cat.label}</span>
-              <span className={`text-[10px] ${isActive ? "text-cyber-cyan font-bold" : "text-titanium-500"}`}>
+              <span className={`text-[10px] ${isActive ? "text-blue-200" : "text-titanium-500"}`}>
                 {cat.count}
               </span>
             </button>

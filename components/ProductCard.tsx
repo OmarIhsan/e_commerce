@@ -6,7 +6,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useWishlistStore } from "@/lib/wishlistStore";
 import { useCurrencyStore } from "@/lib/currencyStore";
 import { useToast } from "@/components/ToastProvider";
-import { Star, ShoppingBag, Eye, ArrowRight, Zap, Check, Heart } from "lucide-react";
+import { Star, ShoppingBag, Eye, Check, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -66,12 +66,12 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98 }}
         transition={{ duration: 0.2 }}
-        className="glass-card rounded-card p-4 flex flex-col sm:flex-row items-center gap-6 group hover:border-cyber-cyan/40"
+        className="rounded-2xl bg-titanium-900 border border-white/10 p-4 flex flex-col sm:flex-row items-center gap-6 group hover:border-blue-500/40 transition-all shadow-sm"
       >
         {/* Thumbnail */}
         <Link
           href={`/product/${product.sku}`}
-          className="relative w-full sm:w-48 h-48 rounded-soft overflow-hidden bg-titanium-900 shrink-0 border border-white/10"
+          className="relative w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-titanium-950 shrink-0 border border-white/5"
         >
           <img
             src={product.images[0]}
@@ -79,80 +79,74 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {product.discount && product.discount > 0 && (
-            <span className="absolute top-2.5 left-2.5 rounded-subtle bg-cyber-rose/90 backdrop-blur-md px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase shadow-sm">
-              -{product.discount}%
+            <span className="absolute top-2.5 left-2.5 rounded-md bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
+              -{product.discount}% OFF
             </span>
           )}
 
           {/* Wishlist button */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-titanium-950/80 backdrop-blur-md border border-white/10 text-titanium-300 hover:text-cyber-rose transition-colors z-10"
+            className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 transition-colors z-10"
             title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
           >
-            <Heart className={`w-3.5 h-3.5 ${isInWishlist ? "text-cyber-rose fill-cyber-rose" : ""}`} />
+            <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
           </button>
         </Link>
 
         {/* Content details */}
         <div className="flex-1 min-w-0 flex flex-col justify-between w-full h-full py-1">
           <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1.5">
-              <span className="font-mono text-[10px] text-cyber-cyan tracking-widest uppercase font-semibold">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs text-titanium-400">
+              <span className="font-semibold text-blue-400 uppercase tracking-wide">
                 {product.brand}
               </span>
-              <span className="text-titanium-600 font-mono text-[10px]">•</span>
-              <span className="font-mono text-[10px] text-titanium-400 uppercase tracking-wider">
-                SKU: {product.sku}
-              </span>
-              <span className="text-titanium-600 font-mono text-[10px]">•</span>
-              <div className="flex items-center gap-1 text-[11px] font-mono text-cyber-amber">
-                <Star className="w-3 h-3 fill-cyber-amber text-cyber-amber" />
+              <span>•</span>
+              <div className="flex items-center gap-1 text-amber-400 font-semibold">
+                <Star className="w-3.5 h-3.5 fill-amber-400" />
                 <span>{product.rating.toFixed(1)}</span>
-                <span className="text-titanium-500">({product.reviewsCount})</span>
+                <span className="text-titanium-400 font-normal">({product.reviewsCount})</span>
               </div>
             </div>
 
             <Link href={`/product/${product.sku}`}>
-              <h3 className="text-base font-bold text-titanium-100 group-hover:text-cyber-cyan transition-colors mb-2">
+              <h3 className="text-base font-bold text-white group-hover:text-blue-400 transition-colors mb-2">
                 {product.name}
               </h3>
             </Link>
 
-            <p className="text-xs text-titanium-400 line-clamp-2 leading-relaxed mb-3">
+            <p className="text-xs text-titanium-300 line-clamp-2 leading-relaxed mb-3">
               {product.description}
             </p>
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/5">
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-lg font-bold text-titanium-100">
+              <span className="text-lg font-bold text-white">
                 {formatPrice(product.price)}
               </span>
               {product.compareAt && (
-                <span className="font-mono text-xs text-titanium-500 line-through">
+                <span className="text-xs text-titanium-500 line-through">
                   {formatPrice(product.compareAt)}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleQuickAdd}
-                disabled={product.inventory <= 0 || isAdding}
-                className="px-4 py-2 rounded-subtle btn-cyber-primary text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5 shadow-glow disabled:opacity-40"
-              >
-                {hasJustAdded ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" /> Added
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag className="w-3.5 h-3.5" /> Quick Add
-                  </>
-                )}
-              </button>
-            </div>
+            <button
+              onClick={handleQuickAdd}
+              disabled={product.inventory <= 0 || isAdding}
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-40"
+            >
+              {hasJustAdded ? (
+                <>
+                  <Check className="w-3.5 h-3.5" /> Added
+                </>
+              ) : (
+                <>
+                  <ShoppingBag className="w-3.5 h-3.5" /> Add to Cart
+                </>
+              )}
+            </button>
           </div>
         </div>
       </motion.div>
@@ -167,13 +161,13 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="glass-card rounded-card overflow-hidden flex flex-col justify-between group hover:border-cyber-cyan/40 relative"
+      className="rounded-2xl bg-titanium-900 border border-white/10 overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 transition-all shadow-sm relative"
     >
       <div>
         {/* Image Container with overlay triggers */}
         <Link
           href={`/product/${product.sku}`}
-          className="block relative h-64 w-full overflow-hidden bg-titanium-900 border-b border-white/10"
+          className="block relative h-64 w-full overflow-hidden bg-titanium-950 border-b border-white/10"
         >
           <img
             src={product.images[0]}
@@ -184,12 +178,12 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
             {product.discount && product.discount > 0 && (
-              <span className="rounded-subtle bg-cyber-rose/90 backdrop-blur-md px-2 py-0.5 text-[10px] font-mono font-bold text-white uppercase shadow-sm">
-                -{product.discount}%
+              <span className="rounded-md bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
+                -{product.discount}% OFF
               </span>
             )}
             {product.flags?.includes("new") && (
-              <span className="rounded-subtle bg-cyber-cyan/90 backdrop-blur-md px-2 py-0.5 text-[10px] font-mono font-bold text-titanium-950 uppercase shadow-sm">
+              <span className="rounded-md bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
                 NEW
               </span>
             )}
@@ -198,36 +192,29 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           {/* Wishlist trigger on card */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-3 right-3 p-1.5 rounded-full bg-titanium-950/80 backdrop-blur-md border border-white/10 text-titanium-300 hover:text-cyber-rose hover:scale-110 transition-all z-20"
+            className="absolute top-3 right-3 p-2 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 hover:scale-110 transition-all z-20"
             title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
           >
-            <Heart className={`w-3.5 h-3.5 ${isInWishlist ? "text-cyber-rose fill-cyber-rose" : ""}`} />
+            <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
           </button>
-
-          {/* Hover preview icon overlay */}
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-            <span className="px-3.5 py-1.5 rounded-subtle bg-titanium-950/90 text-titanium-100 font-mono text-xs uppercase tracking-wider flex items-center gap-1.5 border border-white/20 shadow-glass">
-              <Eye className="w-3.5 h-3.5 text-cyber-cyan" /> Inspect
-            </span>
-          </div>
         </Link>
 
         {/* Card Body */}
         <div className="p-4 space-y-2">
-          {/* Metadata telemetry */}
-          <div className="flex items-center justify-between text-[10px] font-mono">
-            <span className="text-cyber-cyan uppercase tracking-widest font-semibold">
+          {/* Brand & Rating */}
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-blue-400 uppercase tracking-wide font-semibold text-[11px]">
               {product.brand}
             </span>
-            <div className="flex items-center gap-1 text-cyber-amber">
-              <Star className="w-3 h-3 fill-cyber-amber text-cyber-amber" />
+            <div className="flex items-center gap-1 text-amber-400 font-semibold text-xs">
+              <Star className="w-3.5 h-3.5 fill-amber-400" />
               <span>{product.rating.toFixed(1)}</span>
             </div>
           </div>
 
           {/* Title */}
           <Link href={`/product/${product.sku}`} className="block">
-            <h3 className="font-semibold text-sm text-titanium-100 group-hover:text-cyber-cyan transition-colors line-clamp-1">
+            <h3 className="font-semibold text-sm text-white group-hover:text-blue-400 transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
@@ -235,10 +222,6 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           <p className="text-xs text-titanium-400 line-clamp-2 leading-relaxed h-8">
             {product.description}
           </p>
-
-          <div className="text-[10px] font-mono text-titanium-500 pt-1">
-            SKU: <span className="text-titanium-400">{product.sku}</span>
-          </div>
         </div>
       </div>
 
@@ -246,11 +229,11 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       <div className="px-4 pb-4 pt-2 border-t border-white/5 flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex items-baseline gap-1.5">
-            <span className="font-mono text-base font-bold text-titanium-100">
+            <span className="text-base font-bold text-white">
               {formatPrice(product.price)}
             </span>
             {product.compareAt && (
-              <span className="font-mono text-[11px] text-titanium-500 line-through">
+              <span className="text-xs text-titanium-500 line-through">
                 {formatPrice(product.compareAt)}
               </span>
             )}
@@ -260,15 +243,16 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         <button
           onClick={handleQuickAdd}
           disabled={product.inventory <= 0 || isAdding}
-          className="p-2 rounded-subtle btn-titanium text-titanium-200 hover:text-cyber-cyan hover:border-cyber-cyan/50 transition-all disabled:opacity-30 disabled:cursor-not-allowed group/btn"
+          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40"
           aria-label={`Quick add ${product.name} to cart`}
-          title="Quick Add to Cart"
+          title="Add to Cart"
         >
           {hasJustAdded ? (
-            <Check className="w-4 h-4 text-cyber-emerald" />
+            <Check className="w-3.5 h-3.5 text-white" />
           ) : (
-            <ShoppingBag className="w-4 h-4 transition-transform group-hover/btn:scale-110" />
+            <ShoppingBag className="w-3.5 h-3.5" />
           )}
+          <span>Add</span>
         </button>
       </div>
     </motion.div>
