@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { Product } from "@/lib/mockData";
 import { useCartStore } from "@/lib/cartStore";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { useCurrencyStore } from "@/lib/currencyStore";
 import { useToast } from "@/components/ToastProvider";
-import { formatCurrency } from "@/lib/utils";
-import { Star, ShoppingBag, Eye, ArrowRight, Zap, Check } from "lucide-react";
+import { Star, ShoppingBag, Eye, ArrowRight, Zap, Check, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -16,7 +17,10 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, viewMode = "grid" }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
-  const { success, error } = useToast();
+  const toggleWishlist = useWishlistStore((s) => s.toggleWishlist);
+  const isInWishlist = useWishlistStore((s) => s.isInWishlist(product.sku));
+  const formatPrice = useCurrencyStore((s) => s.formatPrice);
+  const { success, error, info } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [hasJustAdded, setHasJustAdded] = useState(false);
 
@@ -25,7 +29,6 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
     e.stopPropagation();
 
     setIsAdding(true);
-    // default to first available size if product has sizes
     const defaultSize = Array.isArray(product.attributes?.size)
       ? (product.attributes?.size as string[])[0]
       : undefined;
@@ -42,6 +45,17 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       error(res.message);
     }
     setIsAdding(false);
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const result = toggleWishlist(product);
+    if (result.added) {
+      success(result.message);
+    } else {
+      info(result.message);
+    }
   };
 
   if (viewMode === "list") {
@@ -69,6 +83,15 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
               -{product.discount}%
             </span>
           )}
+
+          {/* Wishlist button */}
+          <button
+            onClick={handleToggleWishlist}
+            className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-titanium-950/80 backdrop-blur-md border border-white/10 text-titanium-300 hover:text-cyber-rose transition-colors z-10"
+            title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
+          >
+            <Heart className={`w-3.5 h-3.5 ${isInWishlist ? "text-cyber-rose fill-cyber-rose" : ""}`} />
+          </button>
         </Link>
 
         {/* Content details */}
@@ -91,40 +114,29 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             </div>
 
             <Link href={`/product/${product.sku}`}>
-              <h3 className="text-base font-semibold text-titanium-100 group-hover:text-cyber-cyan transition-colors">
+              <h3 className="text-base font-bold text-titanium-100 group-hover:text-cyber-cyan transition-colors mb-2">
                 {product.name}
               </h3>
             </Link>
-            <p className="text-xs text-titanium-400 mt-1.5 line-clamp-2 leading-relaxed">
+
+            <p className="text-xs text-titanium-400 line-clamp-2 leading-relaxed mb-3">
               {product.description}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 mt-4 pt-3 border-t border-white/5">
-            {/* Price */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/5">
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-xl font-bold text-titanium-100">
-                {formatCurrency(product.price)}
+              <span className="font-mono text-lg font-bold text-titanium-100">
+                {formatPrice(product.price)}
               </span>
               {product.compareAt && (
                 <span className="font-mono text-xs text-titanium-500 line-through">
-                  {formatCurrency(product.compareAt)}
+                  {formatPrice(product.compareAt)}
                 </span>
               )}
-              <span className="text-[10px] font-mono text-cyber-emerald ml-1 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyber-emerald"></span>
-                IN STOCK ({product.inventory})
-              </span>
             </div>
 
-            {/* Actions */}
             <div className="flex items-center gap-2">
-              <Link
-                href={`/product/${product.sku}`}
-                className="px-3 py-2 rounded-subtle btn-titanium text-xs font-mono uppercase tracking-wider flex items-center gap-1.5"
-              >
-                <Eye className="w-3.5 h-3.5" /> Details
-              </Link>
               <button
                 onClick={handleQuickAdd}
                 disabled={product.inventory <= 0 || isAdding}
@@ -181,30 +193,16 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
                 NEW
               </span>
             )}
-            {product.flags?.includes("limited") && (
-              <span className="rounded-subtle bg-cyber-amber/90 backdrop-blur-md px-2 py-0.5 text-[10px] font-mono font-bold text-titanium-950 uppercase shadow-sm">
-                LIMITED
-              </span>
-            )}
           </div>
 
-          {/* Stock inventory pill */}
-          <div className="absolute top-3 right-3 z-10">
-            <span
-              className={`rounded-subtle backdrop-blur-md px-2 py-0.5 text-[9px] font-mono font-bold uppercase tracking-wider flex items-center gap-1 border ${
-                product.inventory > 5
-                  ? "bg-titanium-950/80 text-cyber-emerald border-cyber-emerald/30"
-                  : "bg-titanium-950/80 text-cyber-amber border-cyber-amber/30"
-              }`}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  product.inventory > 5 ? "bg-cyber-emerald" : "bg-cyber-amber animate-ping"
-                }`}
-              />
-              QTY: {product.inventory}
-            </span>
-          </div>
+          {/* Wishlist trigger on card */}
+          <button
+            onClick={handleToggleWishlist}
+            className="absolute top-3 right-3 p-1.5 rounded-full bg-titanium-950/80 backdrop-blur-md border border-white/10 text-titanium-300 hover:text-cyber-rose hover:scale-110 transition-all z-20"
+            title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
+          >
+            <Heart className={`w-3.5 h-3.5 ${isInWishlist ? "text-cyber-rose fill-cyber-rose" : ""}`} />
+          </button>
 
           {/* Hover preview icon overlay */}
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
@@ -249,11 +247,11 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         <div className="flex flex-col">
           <div className="flex items-baseline gap-1.5">
             <span className="font-mono text-base font-bold text-titanium-100">
-              {formatCurrency(product.price)}
+              {formatPrice(product.price)}
             </span>
             {product.compareAt && (
               <span className="font-mono text-[11px] text-titanium-500 line-through">
-                {formatCurrency(product.compareAt)}
+                {formatPrice(product.compareAt)}
               </span>
             )}
           </div>

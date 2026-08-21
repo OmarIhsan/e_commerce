@@ -1,6 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/lib/cartStore";
+import { useCurrencyStore } from "@/lib/currencyStore";
 import { Product } from "@/lib/mockData";
 import { useToast } from "@/components/ToastProvider";
 import { ShoppingBag, Check } from "lucide-react";
@@ -24,6 +25,7 @@ export default function AddToCartButton({
   showPrice = false,
 }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
+  const formatPrice = useCurrencyStore((state) => state.formatPrice);
   const { success, error } = useToast();
   const [isAdded, setIsAdded] = useState(false);
 
@@ -64,7 +66,7 @@ export default function AddToCartButton({
           <ShoppingBag className="w-4 h-4" />
           <span>
             ADD TO CART
-            {showPrice ? ` • $${(product.price * qty).toFixed(2)}` : ""}
+            {showPrice ? ` • ${formatPrice(product.price * qty)}` : ""}
             {size ? ` (${size})` : ""}
           </span>
         </>

@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
-import { ShoppingBag, Search, Sparkles, ShieldCheck, Zap } from "lucide-react";
+import { useWishlistStore } from "@/lib/wishlistStore";
+import { useCurrencyStore, CURRENCIES, CurrencyCode } from "@/lib/currencyStore";
+import { ShoppingBag, Search, Sparkles, ShieldCheck, Zap, Heart, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Header() {
@@ -12,10 +14,15 @@ export default function Header() {
   const getItemCount = useCartStore((s) => s.getItemCount);
   const hasHydrated = useCartStore((s) => s.hasHydrated);
 
+  const wishlistCount = useWishlistStore((s) => s.items.length);
+  const currency = useCurrencyStore((s) => s.currency);
+  const setCurrency = useCurrencyStore((s) => s.setCurrency);
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
   const count = mounted && hasHydrated ? getItemCount() : 0;
+  const wishCount = mounted ? wishlistCount : 0;
 
   const navLinks = [
     { href: "/", label: "Catalog" },
@@ -68,12 +75,41 @@ export default function Header() {
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center gap-3">
-          <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono text-titanium-400 bg-white/5 px-2.5 py-1 rounded-subtle border border-white/5">
-            <span className="h-1.5 w-1.5 rounded-full bg-cyber-emerald animate-pulse"></span>
-            LATENCY: 12ms
+        <div className="flex items-center gap-2.5">
+          {/* Currency Switcher */}
+          <div className="relative flex items-center">
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
+              className="bg-titanium-900 border border-white/10 text-titanium-200 text-xs font-mono rounded-subtle px-2 py-1.5 pr-6 appearance-none hover:border-white/20 focus:outline-none focus:border-cyber-cyan cursor-pointer transition-colors"
+              title="Select Currency"
+            >
+              {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => (
+                <option key={code} value={code} className="bg-titanium-900 text-titanium-100">
+                  {CURRENCIES[code].label}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute right-2 text-[10px] text-titanium-400 font-mono">
+              ▼
+            </div>
           </div>
 
+          {/* Wishlist button */}
+          <Link
+            href="/wishlist"
+            className="relative flex h-9 w-9 items-center justify-center rounded-subtle border border-white/10 bg-titanium-900/80 text-titanium-300 hover:text-white hover:border-cyber-rose/50 transition-all shadow-sm group"
+            title="View Wishlist"
+          >
+            <Heart className={`h-4 w-4 transition-transform group-hover:scale-110 ${wishCount > 0 ? "text-cyber-rose fill-cyber-rose" : ""}`} />
+            {wishCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-pill bg-cyber-rose px-1 text-[9px] font-bold text-white shadow-xs">
+                {wishCount}
+              </span>
+            )}
+          </Link>
+
+          {/* Search Shortcut */}
           <Link
             href="/#catalog"
             className="flex h-9 w-9 items-center justify-center rounded-subtle border border-white/10 bg-titanium-900/60 text-titanium-300 hover:text-white hover:border-white/20 transition-colors"
@@ -85,7 +121,7 @@ export default function Header() {
           {/* Cart trigger button */}
           <button
             onClick={toggleDrawer}
-            className="relative flex h-9 items-center gap-2.5 rounded-subtle border border-white/10 bg-titanium-900/80 px-3.5 text-xs font-mono font-medium text-titanium-100 hover:border-cyber-cyan/50 hover:bg-white/5 transition-all shadow-sm group"
+            className="relative flex h-9 items-center gap-2 rounded-subtle border border-white/10 bg-titanium-900/80 px-3 text-xs font-mono font-medium text-titanium-100 hover:border-cyber-cyan/50 hover:bg-white/5 transition-all shadow-sm group"
             aria-label={`Open Cart with ${count} items`}
           >
             <ShoppingBag className="h-4 w-4 text-cyber-cyan transition-transform group-hover:scale-110" />
