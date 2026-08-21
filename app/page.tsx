@@ -11,7 +11,7 @@ export default function HomePage() {
             <Cpu className="h-5 w-5 text-cyber-cyan" />
           </div>
           <div className="font-mono text-xs text-titanium-400 uppercase tracking-widest">
-            INITIALIZING CATALOG ENGINE...
+            LOADING CATALOG...
           </div>
         </div>
       }

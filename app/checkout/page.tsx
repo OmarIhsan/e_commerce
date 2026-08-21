@@ -212,7 +212,7 @@ export default function CheckoutPage() {
             <span className="flex h-5 w-5 items-center justify-center rounded-pill bg-white/10 text-[10px]">
               {currentStep > 1 ? <Check className="w-3 h-3" /> : "1"}
             </span>
-            <span className="hidden sm:inline">1. SHIPPING &amp; CONTACT</span>
+            <span className="hidden sm:inline">1. Shipping</span>
           </button>
 
           {/* Step 2 */}
@@ -232,7 +232,7 @@ export default function CheckoutPage() {
             <span className="flex h-5 w-5 items-center justify-center rounded-pill bg-white/10 text-[10px]">
               {currentStep > 2 ? <Check className="w-3 h-3" /> : "2"}
             </span>
-            <span className="hidden sm:inline">2. DELIVERY TIER</span>
+            <span className="hidden sm:inline">2. Delivery</span>
           </button>
 
           {/* Step 3 */}
@@ -250,7 +250,7 @@ export default function CheckoutPage() {
             <span className="flex h-5 w-5 items-center justify-center rounded-pill bg-white/10 text-[10px]">
               3
             </span>
-            <span className="hidden sm:inline">3. SIMULATED PAYMENT</span>
+            <span className="hidden sm:inline">3. Payment</span>
           </button>
         </div>
       </div>
@@ -632,19 +632,19 @@ export default function CheckoutPage() {
                   {isProcessing ? (
                     <>
                       <div className="h-4 w-4 rounded-full border-2 border-titanium-950 border-t-transparent animate-spin" />
-                      <span>DISPATCHING SECURE ORDER STATE MACHINE...</span>
+                      <span>PROCESSING ORDER...</span>
                     </>
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />
-                      <span>AUTHORIZE &amp; PLACE ORDER • {formatCurrency(grandTotal)}</span>
+                      <span>PLACE ORDER • {formatCurrency(grandTotal)}</span>
                     </>
                   )}
                 </button>
 
                 <div className="flex items-center justify-center gap-2 text-[10px] font-mono text-titanium-500">
                   <ShieldCheck className="w-3.5 h-3.5 text-cyber-emerald" />
-                  <span>SIMULATED TRANSACTION • NO REAL CHARGES PROCESSED</span>
+                  <span>DEMO MODE • NO REAL CHARGES WILL BE MADE</span>
                 </div>
               </div>
 
@@ -665,8 +665,8 @@ export default function CheckoutPage() {
         <div className="lg:col-span-5 space-y-6">
           <div className="glass-panel p-6 rounded-card space-y-5 sticky top-24">
             <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200 border-b border-white/10 pb-3 flex items-center justify-between">
-              <span>ORDER TELEMETRY</span>
-              <span className="text-cyber-cyan">{items.length} LINE ITEMS</span>
+              <span>ORDER SUMMARY</span>
+              <span className="text-cyber-cyan">{items.length} ITEMS</span>
             </h3>
 
             {/* Line items mini scroll */}

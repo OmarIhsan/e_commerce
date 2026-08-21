@@ -40,35 +40,35 @@ export default function CatalogView() {
 
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-subtle bg-white/5 border border-white/10 text-xs font-mono text-cyber-cyan">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>SUB-SECOND PRECISION COMMERCE ARCHITECTURE</span>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>FAST &amp; RESPONSIVE STOREFRONT</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold text-titanium-100 tracking-tight leading-tight">
-            High-Performance Apparel &amp; EDC Hardware.
+            Premium Everyday Carry &amp; Technical Apparel.
           </h1>
 
           <p className="text-sm sm:text-base text-titanium-300 leading-relaxed max-w-2xl font-normal">
-            Curated precision gear engineered from aerospace aramid fibers, Kuroki selvedge denim, and waterproof X-Pac fabrics. Built for instant discovery.
+            Carefully curated gear crafted from durable Cordura, Kuroki selvedge denim, and weatherproof fabrics. Browse items, filter by category, and enjoy an instant checkout experience.
           </p>
 
-          {/* Real-time telemetry metrics */}
+          {/* Quick Store Highlights */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 border-t border-white/10">
             <div className="space-y-1">
-              <div className="font-mono text-xs text-titanium-400">LATENCY</div>
-              <div className="font-mono text-lg font-bold text-cyber-cyan">&lt; 15ms</div>
+              <div className="font-mono text-xs text-titanium-400">DISCOVERY</div>
+              <div className="font-mono text-lg font-bold text-cyber-cyan">Instant Search</div>
             </div>
             <div className="space-y-1">
-              <div className="font-mono text-xs text-titanium-400">STATE ENGINE</div>
-              <div className="font-mono text-lg font-bold text-titanium-100">Zustand SSR</div>
+              <div className="font-mono text-xs text-titanium-400">SHOPPING CART</div>
+              <div className="font-mono text-lg font-bold text-titanium-100">Live Auto-Save</div>
             </div>
             <div className="space-y-1">
-              <div className="font-mono text-xs text-titanium-400">VALIDATION</div>
-              <div className="font-mono text-lg font-bold text-cyber-emerald">100% Zod</div>
+              <div className="font-mono text-xs text-titanium-400">CHECKOUT</div>
+              <div className="font-mono text-lg font-bold text-cyber-emerald">1-Click Test</div>
             </div>
             <div className="space-y-1">
-              <div className="font-mono text-xs text-titanium-400">STOCK ACCURACY</div>
-              <div className="font-mono text-lg font-bold text-titanium-100">Live Guard</div>
+              <div className="font-mono text-xs text-titanium-400">INVOICE</div>
+              <div className="font-mono text-lg font-bold text-titanium-100">Live Receipt</div>
             </div>
           </div>
         </div>
