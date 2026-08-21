@@ -5,13 +5,15 @@ import { useSearchParams } from "next/navigation";
 import { searchProducts } from "@/lib/mockData";
 import CatalogFilter from "@/components/CatalogFilter";
 import ProductCard from "@/components/ProductCard";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Truck, RotateCcw, ShieldCheck, Sparkles, ShoppingBag, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useEcomI18n } from "@/lib/i18n";
 
 export default function CatalogView() {
   const searchParams = useSearchParams();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const { t } = useEcomI18n();
 
   const query = searchParams.get("q") || undefined;
   const category = searchParams.get("category") || undefined;
@@ -42,15 +44,15 @@ export default function CatalogView() {
         <div className="relative z-10 max-w-3xl space-y-5">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Summer Collection 2026</span>
+            <span>{t.hero.badge}</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
-            Discover Everyday Style &amp; Quality Apparel
+            {t.hero.title}
           </h1>
 
           <p className="text-sm sm:text-base text-titanium-300 leading-relaxed max-w-2xl font-normal">
-            Upgrade your wardrobe with comfortable essentials, trending footwear, and durable accessories. Free shipping on orders over $75 and easy 30-day returns.
+            {t.hero.subtitle}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
@@ -58,19 +60,19 @@ export default function CatalogView() {
               href="/?category=men"
               className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs tracking-wide transition-colors shadow-sm flex items-center gap-1.5"
             >
-              Shop Men <ArrowRight className="w-3.5 h-3.5" />
+              {t.hero.shopMen} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/?category=women"
               className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
             >
-              Shop Women
+              {t.hero.shopWomen}
             </Link>
             <Link
               href="/?category=footwear"
               className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
             >
-              Footwear
+              {t.hero.shopFootwear}
             </Link>
           </div>
         </div>
@@ -83,8 +85,8 @@ export default function CatalogView() {
             <Truck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">Free Express Shipping</h4>
-            <p className="text-[11px] text-titanium-400">On all orders over $75</p>
+            <h4 className="text-xs font-bold text-white">{t.benefits.shippingTitle}</h4>
+            <p className="text-[11px] text-titanium-400">{t.benefits.shippingDesc}</p>
           </div>
         </div>
 
@@ -93,8 +95,8 @@ export default function CatalogView() {
             <RotateCcw className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">30-Day Easy Returns</h4>
-            <p className="text-[11px] text-titanium-400">Hassle-free refunds</p>
+            <h4 className="text-xs font-bold text-white">{t.benefits.returnsTitle}</h4>
+            <p className="text-[11px] text-titanium-400">{t.benefits.returnsDesc}</p>
           </div>
         </div>
 
@@ -103,8 +105,8 @@ export default function CatalogView() {
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">Secure Checkout</h4>
-            <p className="text-[11px] text-titanium-400">100% encrypted payment</p>
+            <h4 className="text-xs font-bold text-white">{t.benefits.securityTitle}</h4>
+            <p className="text-[11px] text-titanium-400">{t.benefits.securityDesc}</p>
           </div>
         </div>
 
@@ -113,8 +115,8 @@ export default function CatalogView() {
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">Verified Quality</h4>
-            <p className="text-[11px] text-titanium-400">Curated authentic gear</p>
+            <h4 className="text-xs font-bold text-white">{t.benefits.qualityTitle}</h4>
+            <p className="text-[11px] text-titanium-400">{t.benefits.qualityDesc}</p>
           </div>
         </div>
       </div>
@@ -132,16 +134,16 @@ export default function CatalogView() {
           <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-titanium-400 mx-auto flex items-center justify-center">
             <ShoppingBag className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-white">No products found</h3>
+          <h3 className="text-lg font-bold text-white">{t.filter.noProducts}</h3>
           <p className="text-xs text-titanium-400 max-w-sm mx-auto">
-            Try adjusting your search keywords or clearing filters to see more items.
+            {t.filter.noProductsDesc}
           </p>
           <div className="pt-2">
             <Link
               href="/"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold"
             >
-              Reset Filters
+              {t.filter.resetFilters}
             </Link>
           </div>
         </div>

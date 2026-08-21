@@ -5,7 +5,8 @@ import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/cartStore";
 import { useWishlistStore } from "@/lib/wishlistStore";
 import { useCurrencyStore, CURRENCIES, CurrencyCode } from "@/lib/currencyStore";
-import { ShoppingBag, Search, Heart } from "lucide-react";
+import { useEcomI18n } from "@/lib/i18n";
+import { ShoppingBag, Search, Heart, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export default function Header() {
@@ -18,6 +19,8 @@ export default function Header() {
   const currency = useCurrencyStore((s) => s.currency);
   const setCurrency = useCurrencyStore((s) => s.setCurrency);
 
+  const { locale, toggleLocale, t } = useEcomI18n();
+
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -25,18 +28,18 @@ export default function Header() {
   const wishCount = mounted ? wishlistCount : 0;
 
   const navLinks = [
-    { href: "/", label: "All Products" },
-    { href: "/?category=women", label: "Women" },
-    { href: "/?category=men", label: "Men" },
-    { href: "/?category=footwear", label: "Footwear" },
-    { href: "/?category=tech-accessories", label: "Accessories" },
+    { href: "/", label: t.nav.all },
+    { href: "/?category=women", label: t.nav.women },
+    { href: "/?category=men", label: t.nav.men },
+    { href: "/?category=footwear", label: t.nav.footwear },
+    { href: "/?category=tech-accessories", label: t.nav.accessories },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-titanium-950/95 backdrop-blur-md transition-all">
       {/* Top Notification Bar */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-medium py-1.5 px-4 text-center">
-        <span>🔥 <strong>Summer Sale:</strong> Use code <code className="bg-black/20 px-1.5 py-0.5 rounded font-mono font-bold">SUMMER15</code> for 15% OFF | Free Shipping over $75</span>
+        <span>{t.topBanner}</span>
       </div>
 
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -48,10 +51,10 @@ export default function Header() {
             </div>
             <div className="flex flex-col">
               <span className="text-base font-bold tracking-tight text-white">
-                Omar<span className="text-blue-400">Store</span>
+                {t.storeName}
               </span>
               <span className="text-[10px] text-titanium-400">
-                Online Retail Store
+                {t.storeSubtitle}
               </span>
             </div>
           </Link>
@@ -79,6 +82,16 @@ export default function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-2.5">
+          {/* Language Toggle Button */}
+          <button
+            onClick={toggleLocale}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-white/10 bg-titanium-900 text-titanium-200 text-xs hover:border-white/20 transition-colors"
+            title={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
+          >
+            <Globe className="w-3.5 h-3.5 text-blue-400" />
+            <span>{locale === "ar" ? "English" : "عربي"}</span>
+          </button>
+
           {/* Currency Switcher */}
           <div className="relative flex items-center">
             <select
@@ -93,7 +106,7 @@ export default function Header() {
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute right-2 text-[10px] text-titanium-400">
+            <div className="pointer-events-none absolute end-2 text-[10px] text-titanium-400">
               ▼
             </div>
           </div>
@@ -106,7 +119,7 @@ export default function Header() {
           >
             <Heart className={`h-4 w-4 ${wishCount > 0 ? "text-rose-500 fill-rose-500" : ""}`} />
             {wishCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white shadow-xs">
+              <span className="absolute -top-1.5 -end-1.5 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[9px] font-bold text-white shadow-xs">
                 {wishCount}
               </span>
             )}
@@ -128,7 +141,7 @@ export default function Header() {
             aria-label={`Open Cart with ${count} items`}
           >
             <ShoppingBag className="h-4 w-4" />
-            <span className="hidden sm:inline">Cart</span>
+            <span className="hidden sm:inline">{t.cart.title.split(" ")[0]}</span>
             {count > 0 && (
               <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white text-blue-600 px-1.5 text-[10px] font-bold shadow-xs">
                 {count}

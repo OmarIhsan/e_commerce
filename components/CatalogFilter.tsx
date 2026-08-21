@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, Grid, List, X, Star, Check, RotateCcw } from "lucide-react";
 import { categories } from "@/lib/mockData";
+import { useEcomI18n } from "@/lib/i18n";
 
 interface CatalogFilterProps {
   viewMode: "grid" | "list";
@@ -18,6 +19,7 @@ export default function CatalogFilter({
 }: CatalogFilterProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useEcomI18n();
 
   // State from URL
   const queryParam = searchParams.get("q") || "";
@@ -88,7 +90,7 @@ export default function CatalogFilter({
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search products, clothing, shoes, accessories..."
+            placeholder={t.filter.searchPlaceholder}
             className="w-full pl-10 pr-10 py-2.5 rounded-lg titanium-input text-xs text-titanium-100 placeholder:text-titanium-500 shadow-inner border border-white/10"
           />
           {searchValue && (
@@ -116,7 +118,7 @@ export default function CatalogFilter({
             }`}
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
-            <span>Filters</span>
+            <span>{t.filter.filtersBtn}</span>
             {activeFilterCount > 0 && (
               <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white text-[10px] font-bold">
                 {activeFilterCount}
@@ -130,11 +132,10 @@ export default function CatalogFilter({
             onChange={(e) => updateUrlParams({ sort: e.target.value })}
             className="px-3 py-2.5 rounded-lg titanium-input text-xs text-titanium-200 cursor-pointer border border-white/10 bg-titanium-900"
           >
-            <option value="featured">Sort: Featured</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="rating">Highest Rated (★)</option>
-            <option value="reviews">Most Reviews</option>
+            <option value="featured">{t.filter.sortFeatured}</option>
+            <option value="price-asc">{t.filter.sortPriceAsc}</option>
+            <option value="price-desc">{t.filter.sortPriceDesc}</option>
+            <option value="rating">{t.filter.sortRating}</option>
           </select>
 
           {/* Grid / List switcher */}
