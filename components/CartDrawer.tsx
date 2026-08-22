@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Tag, ShieldCheck, Sparkles, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useToast } from "@/components/ToastProvider";
 
 const FREE_SHIPPING_THRESHOLD = 75;
@@ -29,6 +30,8 @@ export default function CartDrawer() {
   const formatPrice = useCurrencyStore((s) => s.formatPrice);
   const { dir, t } = useEcomI18n();
   const isRtl = dir === "rtl";
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
 
   const { success, error } = useToast();
   const [promoInput, setPromoInput] = useState("");
@@ -276,7 +279,7 @@ export default function CartDrawer() {
 
                   {/* Checkout Button */}
                   <Link
-                    href="/checkout"
+                    href={`/${locale}/checkout`}
                     onClick={closeDrawer}
                     className="w-full min-h-[48px] rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all group"
                   >

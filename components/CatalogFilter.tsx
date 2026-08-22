@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, SlidersHorizontal, Grid, List, X, Star, Check, RotateCcw } from "lucide-react";
 import { categories } from "@/lib/mockData";
 import { useEcomI18n } from "@/lib/i18n";
@@ -18,6 +18,8 @@ export default function CatalogFilter({
   totalResults,
 }: CatalogFilterProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
   const searchParams = useSearchParams();
   const { t } = useEcomI18n();
 
@@ -50,7 +52,7 @@ export default function CatalogFilter({
           params.set(key, val);
         }
       });
-      router.push(`/?${params.toString()}`, { scroll: false });
+      router.push(`/${locale}?${params.toString()}`, { scroll: false });
     },
     [router, searchParams]
   );
@@ -76,7 +78,7 @@ export default function CatalogFilter({
 
   const handleResetFilters = () => {
     setSearchValue("");
-    router.push("/", { scroll: false });
+    router.push(`/${locale}`, { scroll: false });
   };
 
   return (

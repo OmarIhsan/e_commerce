@@ -9,6 +9,7 @@ import { useToast } from "@/components/ToastProvider";
 import { Star, ShoppingBag, Eye, Check, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 interface ProductCardProps {
   product: Product;
@@ -23,6 +24,9 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
   const { success, error, info } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [hasJustAdded, setHasJustAdded] = useState(false);
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
+  const productHref = `/${locale}/product/${product.sku}`;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -70,7 +74,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       >
         {/* Thumbnail */}
         <Link
-          href={`/product/${product.sku}`}
+          href={productHref}
           className="relative w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-titanium-950 shrink-0 border border-white/5"
         >
           <img
@@ -109,7 +113,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
               </div>
             </div>
 
-            <Link href={`/product/${product.sku}`}>
+            <Link href={productHref}>
               <h3 className="text-base font-bold text-white group-hover:text-blue-400 transition-colors mb-2">
                 {product.name}
               </h3>

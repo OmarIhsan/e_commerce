@@ -4,7 +4,11 @@ import Link from "next/link";
 import { ArrowLeft, ChevronRight, SlidersHorizontal, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { key: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang: string; key: string };
+}): Promise<Metadata> {
   const categories = await fetchPlatziCategories();
   const cat = categories.find((c) => c.id === params.key);
   const name = cat ? cat.label : params.key.replace(/-/g, " ");
@@ -17,15 +21,17 @@ export async function generateMetadata({ params }: { params: { key: string } }):
 export default async function CategoryPage({
   params,
 }: {
-  params: { key: string };
+  params: { lang: string; key: string };
 }) {
-  const key = params.key;
+  const { lang, key } = params;
   const [allProducts, categories] = await Promise.all([
     fetchPlatziProducts(),
     fetchPlatziCategories(),
   ]);
 
-  const matchedCategory = categories.find((c) => c.id.toLowerCase() === key.toLowerCase());
+  const matchedCategory = categories.find(
+    (c) => c.id.toLowerCase() === key.toLowerCase()
+  );
   const items = allProducts.filter(
     (p) => key.toLowerCase() === "all" || p.category.toLowerCase() === key.toLowerCase()
   );
@@ -34,7 +40,10 @@ export default async function CategoryPage({
     <div className="space-y-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-xs font-mono text-titanium-400">
-        <Link href="/" className="hover:text-cyber-cyan transition-colors flex items-center gap-1">
+        <Link
+          href={`/${lang}`}
+          className="hover:text-cyber-cyan transition-colors flex items-center gap-1"
+        >
           <ArrowLeft className="w-3 h-3" /> CATALOG
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
@@ -53,12 +62,12 @@ export default async function CategoryPage({
             {matchedCategory ? matchedCategory.label : key.replace(/-/g, " ")}
           </h1>
           <p className="text-xs font-mono text-titanium-400 mt-1">
-            Displaying {items.length} items from Platzi API in this collection.
+            Displaying {items.length} items in this collection.
           </p>
         </div>
 
         <Link
-          href={`/?category=${key}`}
+          href={`/${lang}?category=${key}`}
           className="px-4 py-2.5 rounded-subtle btn-cyber-primary font-mono text-xs uppercase tracking-wider font-bold flex items-center gap-2 self-start sm:self-auto shadow-glow"
         >
           <SlidersHorizontal className="w-3.5 h-3.5" /> Filter &amp; Search
@@ -72,7 +81,7 @@ export default async function CategoryPage({
             No products found in this category.
           </div>
           <Link
-            href="/"
+            href={`/${lang}`}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-subtle bg-white/5 border border-white/10 text-xs font-mono text-cyber-cyan hover:bg-white/10 transition-colors"
           >
             Back to All Products

@@ -1,49 +1,39 @@
 import { fetchPlatziProductBySku, fetchPlatziProducts } from "@/lib/platziApi";
-import type { Metadata } from "next";
-import ProductGallery from "@/components/ProductGallery";
 import ProductActions from "@/components/ProductActions";
 import ProductCard from "@/components/ProductCard";
 import ProductReviewModal from "@/components/ProductReviewModal";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Star, ShieldCheck, ChevronRight, Sparkles, Layers, ArrowLeft, MessageSquare } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+import {
+  ArrowLeft,
+  ChevronRight,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  MessageSquare,
+} from "lucide-react";
+import type { Metadata } from "next";
 
-interface ProductPageProps {
-  params: {
-    sku: string;
-  };
-}
-
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang: string; sku: string };
+}): Promise<Metadata> {
   const product = await fetchPlatziProductBySku(params.sku);
-  if (!product) {
-    return {
-      title: "Product Not Found | Store",
-    };
-  }
-
+  if (!product) return { title: "Product Not Found | Store" };
   return {
-    title: `${product.name} | ${product.brand} - Store`,
+    title: `${product.name} | Store`,
     description: product.description,
-    openGraph: {
-      title: `${product.name} - ${formatCurrency(product.price)}`,
-      description: product.description,
-      images: [
-        {
-          url: product.images[0],
-          width: 1200,
-          height: 630,
-          alt: product.name,
-        },
-      ],
-      type: "website",
-    },
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductPageProps) {
-  const product = await fetchPlatziProductBySku(params.sku);
+export default async function ProductDetailPage({
+  params,
+}: {
+  params: { lang: string; sku: string };
+}) {
+  const { lang, sku } = params;
+  const product = await fetchPlatziProductBySku(sku);
 
   if (!product) {
     notFound();
@@ -51,40 +41,48 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
   const allProducts = await fetchPlatziProducts();
   const relatedProducts = allProducts
-    .filter((p) => p.sku !== product.sku)
+    .filter((p) => p.category === product.category && p.sku !== product.sku)
     .slice(0, 4);
 
   return (
     <div className="space-y-12">
-      {/* Breadcrumb Bar */}
+      {/* Breadcrumb Navigation */}
       <nav className="flex items-center gap-2 text-xs font-mono text-titanium-400">
-        <Link href="/" className="hover:text-cyber-cyan transition-colors flex items-center gap-1">
+        <Link
+          href={`/${lang}`}
+          className="hover:text-cyber-cyan transition-colors flex items-center gap-1"
+        >
           <ArrowLeft className="w-3 h-3" /> CATALOG
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
         <Link
-          href={`/category/${product.category}`}
+          href={`/${lang}/category/${product.category}`}
           className="hover:text-cyber-cyan transition-colors uppercase"
         >
           {product.category}
         </Link>
         <ChevronRight className="w-3.5 h-3.5 text-titanium-600" />
-        <span className="text-titanium-100 uppercase font-bold truncate max-w-xs">
+        <span className="text-titanium-100 truncate max-w-[200px] sm:max-w-none">
           {product.name}
         </span>
       </nav>
 
-      {/* Main Product Layout: 2 Columns */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Left Column: Gallery */}
-        <div className="lg:col-span-7 space-y-6">
-          <ProductGallery images={product.images} productName={product.name} />
+      {/* Main Product Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Column: Image Gallery */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="rounded-card border border-white/10 overflow-hidden bg-titanium-950/80 aspect-4/3 relative group">
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
 
-          {/* Desktop Product Description & Specs Accordion */}
+          {/* Desktop Specs & Description */}
           <div className="hidden lg:block space-y-6 pt-6 border-t border-white/10">
-            <div className="space-y-3">
-              <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200 flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyber-cyan" />
+            <div className="space-y-2">
+              <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200">
                 OVERVIEW
               </h3>
               <p className="text-sm text-titanium-300 leading-relaxed">
@@ -93,18 +91,17 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             </div>
 
             {product.specs && (
-              <div className="space-y-3 pt-4 border-t border-white/5">
-                <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-cyber-cyan" />
-                  PRODUCT DETAILS
+              <div className="space-y-3">
+                <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200">
+                  SPECIFICATIONS
                 </h3>
-                <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   {Object.entries(product.specs).map(([key, val]) => (
                     <div
                       key={key}
-                      className="p-3 rounded-subtle bg-white/5 border border-white/5 space-y-0.5"
+                      className="p-2.5 rounded-subtle bg-white/5 border border-white/5"
                     >
-                      <div className="font-mono text-[10px] text-titanium-400 uppercase">{key}</div>
+                      <div className="text-titanium-400 text-[10px] font-mono uppercase">{key}</div>
                       <div className="font-mono text-titanium-200 font-semibold">{val}</div>
                     </div>
                   ))}
@@ -114,9 +111,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           </div>
         </div>
 
-        {/* Right Column: Information & Add to Cart Container */}
+        {/* Right Column: Information & Add to Cart */}
         <div className="lg:col-span-5 space-y-6">
-          {/* Header Metadata */}
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <span className="font-mono text-xs font-bold text-cyber-cyan uppercase tracking-wider">
@@ -141,7 +137,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             </div>
           </div>
 
-          {/* Pricing Block */}
           <div className="p-4 rounded-card glass-panel border border-white/10 flex items-baseline gap-3">
             <span className="text-3xl font-extrabold font-mono text-titanium-100">
               ${product.price.toFixed(2)}
@@ -158,10 +153,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             )}
           </div>
 
-          {/* Interactive Variant Options & Add to Cart Client Component */}
           <ProductActions product={product} />
 
-          {/* Guarantee Badges */}
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="p-3 rounded-subtle bg-white/5 border border-white/5 flex items-center gap-2.5">
               <ShieldCheck className="w-4 h-4 text-cyber-emerald shrink-0" />
@@ -179,7 +172,6 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
             </div>
           </div>
 
-          {/* Mobile Product Description */}
           <div className="lg:hidden space-y-4 pt-6 border-t border-white/10">
             <div className="space-y-2">
               <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-titanium-200">
@@ -247,7 +239,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
         </div>
       </section>
 
-      {/* Related Products Grid */}
+      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="space-y-6 pt-10 border-t border-white/10">
           <div className="flex items-center justify-between">
@@ -260,7 +252,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
               </p>
             </div>
             <Link
-              href="/"
+              href={`/${lang}`}
               className="text-xs font-mono text-cyber-cyan hover:underline flex items-center gap-1"
             >
               View Full Catalog <ChevronRight className="w-3.5 h-3.5" />

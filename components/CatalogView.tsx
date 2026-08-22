@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { searchProducts } from "@/lib/mockData";
 import CatalogFilter from "@/components/CatalogFilter";
 import ProductCard from "@/components/ProductCard";
@@ -12,6 +12,8 @@ import { useEcomI18n } from "@/lib/i18n";
 
 export default function CatalogView() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { t } = useEcomI18n();
 
@@ -57,19 +59,19 @@ export default function CatalogView() {
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
-              href="/?category=men"
+              href={`/${locale}?category=men`}
               className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs tracking-wide transition-colors shadow-sm flex items-center gap-1.5"
             >
               {t.hero.shopMen} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
-              href="/?category=women"
+              href={`/${locale}?category=women`}
               className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
             >
               {t.hero.shopWomen}
             </Link>
             <Link
-              href="/?category=footwear"
+              href={`/${locale}?category=footwear`}
               className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
             >
               {t.hero.shopFootwear}
@@ -140,7 +142,7 @@ export default function CatalogView() {
           </p>
           <div className="pt-2">
             <Link
-              href="/"
+              href={`/${locale}`}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold"
             >
               {t.filter.resetFilters}

@@ -197,21 +197,25 @@ const EcomI18nContext = createContext<EcomI18nContextType>({
   dir: "ltr",
 });
 
-export function EcomI18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("en");
+export function EcomI18nProvider({
+  children,
+  initialLocale = "en",
+}: {
+  children: React.ReactNode;
+  initialLocale?: Locale;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   useEffect(() => {
+    // URL locale is authoritative — keep html attributes in sync
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     try {
-      const saved = localStorage.getItem(STORAGE_KEY) as Locale;
-      if (saved === "en" || saved === "ar") {
-        setLocaleState(saved);
-        document.documentElement.lang = saved;
-        document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
-      }
+      localStorage.setItem(STORAGE_KEY, locale);
     } catch {
-      // default
+      // ignore
     }
-  }, []);
+  }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
