@@ -7,7 +7,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Trash2, Plus, Minus, ArrowRight, ArrowLeft, Tag, ShieldCheck, Sparkles, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
 import { useToast } from "@/components/ToastProvider";
 
 const FREE_SHIPPING_THRESHOLD = 75;
@@ -28,10 +27,8 @@ export default function CartDrawer() {
   const getGrandTotal = useCartStore((s) => s.getGrandTotal);
 
   const formatPrice = useCurrencyStore((s) => s.formatPrice);
-  const { dir, t } = useEcomI18n();
+  const { dir, locale, t } = useEcomI18n();
   const isRtl = dir === "rtl";
-  const pathname = usePathname();
-  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
 
   const { success, error } = useToast();
   const [promoInput, setPromoInput] = useState("");
@@ -128,11 +125,11 @@ export default function CartDrawer() {
                   <span className="text-titanium-300">
                     {subtotal >= FREE_SHIPPING_THRESHOLD ? (
                       <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                        <Sparkles className="w-3.5 h-3.5" /> Free Express Shipping Unlocked!
+                        <Sparkles className="w-3.5 h-3.5" /> {t.cart.freeShippingBar}
                       </span>
                     ) : (
                       <span>
-                        Add <strong className="text-blue-400">{formatPrice(remainingForFreeShip)}</strong> for Free Shipping
+                        {t.cart.unlockFreeShipping} (<strong className="text-blue-400">{formatPrice(remainingForFreeShip)}</strong>)
                       </span>
                     )}
                   </span>
@@ -157,13 +154,13 @@ export default function CartDrawer() {
                     </div>
                     <h3 className="text-sm font-semibold text-white mb-1">{t.cart.empty}</h3>
                     <p className="text-xs text-titanium-400 max-w-xs mb-6">
-                      Explore our lifestyle catalog and add your favourite pieces.
+                      {t.cart.emptyDesc}
                     </p>
                     <button
                       onClick={closeDrawer}
                       className="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-sm transition-colors"
                     >
-                      {t.nav.all}
+                      {t.cart.startShopping}
                     </button>
                   </div>
                 ) : (
@@ -187,7 +184,7 @@ export default function CartDrawer() {
                           {item.name}
                         </h4>
                         <div className="text-[11px] text-titanium-400 mt-0.5">
-                          {item.size && <span>Size: {item.size} </span>}
+                          {item.size && <span>{item.size} </span>}
                           {item.color && <span>• {item.color}</span>}
                         </div>
                         <div className="font-semibold text-blue-400 text-xs mt-1">
@@ -195,7 +192,7 @@ export default function CartDrawer() {
                         </div>
                       </div>
 
-                      {/* Quantity Stepper (44x44px touch targets) */}
+                      {/* Quantity Stepper */}
                       <div className="flex items-center gap-1 border border-white/10 rounded-lg p-0.5 bg-titanium-950">
                         <button
                           onClick={() => handleUpdateQty(item.id, item.qty, -1)}
@@ -235,13 +232,13 @@ export default function CartDrawer() {
                   {/* Promo Input */}
                   <form onSubmit={handleApplyPromo} className="flex gap-2">
                     <div className="relative flex-1">
-                      <Tag className="w-3.5 h-3.5 text-titanium-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                      <Tag className="w-3.5 h-3.5 text-titanium-500 absolute start-3 top-1/2 -translate-y-1/2" />
                       <input
                         type="text"
                         value={promoInput}
                         onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
                         placeholder={t.cart.promoCode}
-                        className="w-full pl-9 pr-3 py-2 rounded-lg bg-titanium-950 border border-white/10 text-xs text-white placeholder:text-titanium-600 focus:outline-none focus:border-blue-500 uppercase"
+                        className="w-full ps-9 pe-3 py-2 rounded-lg bg-titanium-950 border border-white/10 text-xs text-white placeholder:text-titanium-600 focus:outline-none focus:border-blue-500 uppercase"
                       />
                     </div>
                     <button
@@ -253,39 +250,65 @@ export default function CartDrawer() {
                     </button>
                   </form>
 
-                  {/* Summary rows */}
+                  {/* Active promo tag */}
+                  {appliedPromo && (
+                    <div className="flex items-center justify-between px-3 py-1.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-400">
+                      <span className="font-semibold">{appliedPromo.code}: {appliedPromo.description}</span>
+                      <button
+                        onClick={removePromoCode}
+                        className="text-titanium-400 hover:text-white text-[11px] underline"
+                      >
+                        {t.cart.remove}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Breakdown */}
                   <div className="space-y-1.5 text-xs">
                     <div className="flex justify-between text-titanium-400">
                       <span>{t.cart.subtotal}</span>
-                      <span className="text-white font-semibold">{formatPrice(subtotal)}</span>
+                      <span className="font-medium text-white">{formatPrice(subtotal)}</span>
                     </div>
+
                     {discount > 0 && (
                       <div className="flex justify-between text-emerald-400">
-                        <span>Discount ({appliedPromo?.code})</span>
+                        <span>{t.cart.discount}</span>
                         <span>-{formatPrice(discount)}</span>
                       </div>
                     )}
+
                     <div className="flex justify-between text-titanium-400">
                       <span>{t.cart.shipping}</span>
-                      <span className="text-emerald-400 font-semibold">
-                        {shipping === 0 ? t.cart.free : formatPrice(shipping)}
+                      <span>
+                        {shipping === 0 ? (
+                          <span className="text-emerald-400 font-semibold uppercase">{t.cart.free}</span>
+                        ) : (
+                          formatPrice(shipping)
+                        )}
                       </span>
                     </div>
+
                     <div className="flex justify-between text-sm font-bold text-white pt-2 border-t border-white/10">
-                      <span>Total</span>
-                      <span className="text-blue-400 text-base">{formatPrice(total)}</span>
+                      <span>{t.cart.total}</span>
+                      <span className="text-blue-400">{formatPrice(total)}</span>
                     </div>
                   </div>
 
-                  {/* Checkout Button */}
+                  {/* Checkout CTA */}
                   <Link
                     href={`/${locale}/checkout`}
                     onClick={closeDrawer}
-                    className="w-full min-h-[48px] rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all group"
+                    className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-sm min-h-[44px]"
                   >
                     <span>{t.cart.checkout}</span>
-                    <CheckoutIcon className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                    <CheckoutIcon className="w-4 h-4" />
                   </Link>
+
+                  {/* Trust Badge */}
+                  <div className="flex items-center justify-center gap-1.5 text-[11px] text-titanium-400">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>{t.benefits.securityTitle} • {t.benefits.returnsTitle}</span>
+                  </div>
                 </div>
               )}
             </motion.div>

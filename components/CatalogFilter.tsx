@@ -18,10 +18,8 @@ export default function CatalogFilter({
   totalResults,
 }: CatalogFilterProps) {
   const router = useRouter();
-  const pathname = usePathname();
-  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
   const searchParams = useSearchParams();
-  const { t } = useEcomI18n();
+  const { locale, t } = useEcomI18n();
 
   // State from URL
   const queryParam = searchParams.get("q") || "";
@@ -54,7 +52,7 @@ export default function CatalogFilter({
       });
       router.push(`/${locale}?${params.toString()}`, { scroll: false });
     },
-    [router, searchParams]
+    [router, searchParams, locale]
   );
 
   // Debounced search trigger
@@ -85,15 +83,15 @@ export default function CatalogFilter({
     <div className="space-y-4" id="catalog">
       {/* Primary search bar + controls row */}
       <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-        {/* Search input with keyboard shortcut pill */}
+        {/* Search input */}
         <div className="relative flex-1 max-w-xl">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-titanium-400" />
+          <Search className="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-titanium-400" />
           <input
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
             placeholder={t.filter.searchPlaceholder}
-            className="w-full pl-10 pr-10 py-2.5 rounded-lg titanium-input text-xs text-titanium-100 placeholder:text-titanium-500 shadow-inner border border-white/10"
+            className="w-full ps-10 pe-10 py-2.5 rounded-lg titanium-input text-xs text-titanium-100 placeholder:text-titanium-500 shadow-inner border border-white/10"
           />
           {searchValue && (
             <button
@@ -101,7 +99,7 @@ export default function CatalogFilter({
                 setSearchValue("");
                 updateUrlParams({ q: null });
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-titanium-400 hover:text-white p-1"
+              className="absolute end-3 top-1/2 -translate-y-1/2 text-titanium-400 hover:text-white p-1"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -141,12 +139,12 @@ export default function CatalogFilter({
           </select>
 
           {/* Grid / List switcher */}
-          <div className="flex rounded-soft border border-white/10 bg-titanium-900/60 p-1">
+          <div className="flex rounded-lg border border-white/10 bg-titanium-900/60 p-1">
             <button
               onClick={() => onViewModeChange("grid")}
-              className={`p-1.5 rounded-subtle transition-colors ${
+              className={`p-1.5 rounded-md transition-colors ${
                 viewMode === "grid"
-                  ? "bg-white/10 text-cyber-cyan"
+                  ? "bg-white/10 text-blue-400 font-bold"
                   : "text-titanium-500 hover:text-white"
               }`}
               title="Grid View"
@@ -155,9 +153,9 @@ export default function CatalogFilter({
             </button>
             <button
               onClick={() => onViewModeChange("list")}
-              className={`p-1.5 rounded-subtle transition-colors ${
+              className={`p-1.5 rounded-md transition-colors ${
                 viewMode === "list"
-                  ? "bg-white/10 text-cyber-cyan"
+                  ? "bg-white/10 text-blue-400 font-bold"
                   : "text-titanium-500 hover:text-white"
               }`}
               title="List View"
@@ -172,6 +170,7 @@ export default function CatalogFilter({
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {categories.map((cat) => {
           const isActive = categoryParam === cat.id;
+          const translatedLabel = t.categories[cat.id as keyof typeof t.categories] || cat.label;
           return (
             <button
               key={cat.id}
@@ -182,7 +181,7 @@ export default function CatalogFilter({
                   : "bg-titanium-900 border border-white/10 text-titanium-300 hover:text-white hover:border-white/20"
               }`}
             >
-              <span>{cat.label}</span>
+              <span>{translatedLabel}</span>
               <span className={`text-[10px] ${isActive ? "text-blue-200" : "text-titanium-500"}`}>
                 {cat.count}
               </span>
@@ -193,24 +192,26 @@ export default function CatalogFilter({
 
       {/* Expandable Advanced Filter Panel */}
       {isFilterPanelOpen && (
-        <div className="p-5 rounded-card glass-panel space-y-4 border border-cyber-cyan/20 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="p-5 rounded-xl bg-titanium-900 border border-white/10 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-titanium-200 flex items-center gap-2">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-cyber-cyan" /> ADVANCED FACETED FILTERING
+            <span className="text-xs font-bold uppercase tracking-wider text-titanium-200 flex items-center gap-2">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" />
+              {t.filter.advancedFilters}
             </span>
             <button
               onClick={handleResetFilters}
-              className="flex items-center gap-1.5 text-xs font-mono text-titanium-400 hover:text-cyber-rose transition-colors"
+              className="flex items-center gap-1.5 text-xs text-titanium-400 hover:text-rose-400 transition-colors"
             >
-              <RotateCcw className="w-3 h-3" /> Reset All Filters
+              <RotateCcw className="w-3 h-3" />
+              {t.filter.resetFilters}
             </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 pt-1">
             {/* Price Filter */}
             <div className="space-y-2">
-              <label className="text-xs font-mono text-titanium-300 uppercase tracking-wider block">
-                Price Range ($USD)
+              <label className="text-xs font-medium text-titanium-300 uppercase tracking-wider block">
+                {t.filter.priceRange}
               </label>
               <div className="flex items-center gap-2">
                 <input
@@ -218,16 +219,16 @@ export default function CatalogFilter({
                   placeholder="Min"
                   value={minPriceParam}
                   onChange={(e) => updateUrlParams({ minPrice: e.target.value || null })}
-                  className="w-full px-3 py-1.5 rounded-subtle titanium-input text-xs font-mono"
+                  className="w-full px-3 py-1.5 rounded-md titanium-input text-xs"
                   min="0"
                 />
-                <span className="text-titanium-500 font-mono">-</span>
+                <span className="text-titanium-500">-</span>
                 <input
                   type="number"
                   placeholder="Max"
                   value={maxPriceParam}
                   onChange={(e) => updateUrlParams({ maxPrice: e.target.value || null })}
-                  className="w-full px-3 py-1.5 rounded-subtle titanium-input text-xs font-mono"
+                  className="w-full px-3 py-1.5 rounded-md titanium-input text-xs"
                   min="0"
                 />
               </div>
@@ -242,7 +243,7 @@ export default function CatalogFilter({
                   <button
                     key={preset.label}
                     onClick={() => updateUrlParams({ minPrice: preset.min || null, maxPrice: preset.max || null })}
-                    className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/5 text-titanium-300 hover:text-cyber-cyan hover:border-cyber-cyan/40 transition-colors"
+                    className="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/5 text-titanium-300 hover:text-blue-400 hover:border-blue-500/40 transition-colors"
                   >
                     {preset.label}
                   </button>
@@ -252,32 +253,32 @@ export default function CatalogFilter({
 
             {/* Rating Filter */}
             <div className="space-y-2">
-              <label className="text-xs font-mono text-titanium-300 uppercase tracking-wider block">
-                Minimum Rating
+              <label className="text-xs font-medium text-titanium-300 uppercase tracking-wider block">
+                {t.filter.minRating}
               </label>
               <div className="flex flex-col gap-1.5">
                 {[
-                  { label: "All Ratings", val: "" },
-                  { label: "4.8 & Above", val: "4.8" },
-                  { label: "4.5 & Above", val: "4.5" },
-                  { label: "4.0 & Above", val: "4.0" },
+                  { label: t.filter.allRatings, val: "" },
+                  { label: `4.8 ${t.filter.ratingAbove}`, val: "4.8" },
+                  { label: `4.5 ${t.filter.ratingAbove}`, val: "4.5" },
+                  { label: `4.0 ${t.filter.ratingAbove}`, val: "4.0" },
                 ].map((r) => {
                   const isSelected = (minRatingParam || "") === r.val;
                   return (
                     <button
                       key={r.label}
                       onClick={() => updateUrlParams({ minRating: r.val || null })}
-                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-subtle text-xs font-mono transition-colors text-left ${
+                      className={`flex items-center justify-between px-2.5 py-1.5 rounded-md text-xs transition-colors text-start ${
                         isSelected
-                          ? "bg-cyber-cyan/15 text-cyber-cyan border border-cyber-cyan/40 font-semibold"
-                          : "bg-titanium-900/60 text-titanium-300 hover:text-white border border-white/5"
+                          ? "bg-blue-600/20 text-blue-400 border border-blue-500/40 font-semibold"
+                          : "bg-titanium-950/60 text-titanium-300 hover:text-white border border-white/5"
                       }`}
                     >
                       <span className="flex items-center gap-1.5">
-                        {r.val && <Star className="w-3 h-3 fill-cyber-amber text-cyber-amber" />}
+                        {r.val && <Star className="w-3 h-3 fill-amber-400 text-amber-400" />}
                         {r.label}
                       </span>
-                      {isSelected && <Check className="w-3 h-3 text-cyber-cyan" />}
+                      {isSelected && <Check className="w-3 h-3 text-blue-400" />}
                     </button>
                   );
                 })}
@@ -286,19 +287,19 @@ export default function CatalogFilter({
 
             {/* Inventory / Stock Filter */}
             <div className="space-y-2">
-              <label className="text-xs font-mono text-titanium-300 uppercase tracking-wider block">
-                Availability & Stock
+              <label className="text-xs font-medium text-titanium-300 uppercase tracking-wider block">
+                {t.filter.availability}
               </label>
-              <label className="flex items-center gap-2.5 p-3 rounded-subtle bg-titanium-900/60 border border-white/5 cursor-pointer hover:border-white/15 transition-colors">
+              <label className="flex items-center gap-2.5 p-3 rounded-lg bg-titanium-950/60 border border-white/5 cursor-pointer hover:border-white/15 transition-colors">
                 <input
                   type="checkbox"
                   checked={inStockParam}
                   onChange={(e) => updateUrlParams({ inStock: e.target.checked ? "true" : null })}
-                  className="rounded border-white/20 bg-titanium-950 text-cyber-cyan focus:ring-cyber-cyan h-4 w-4"
+                  className="rounded border-white/20 bg-titanium-950 text-blue-600 focus:ring-blue-500 h-4 w-4"
                 />
                 <div className="flex flex-col">
-                  <span className="text-xs font-mono font-medium text-titanium-100">In-Stock Items Only</span>
-                  <span className="text-[10px] text-titanium-400">Exclude zero-inventory SKUs</span>
+                  <span className="text-xs font-medium text-titanium-100">{t.filter.inStockOnly}</span>
+                  <span className="text-[10px] text-titanium-400">{t.filter.inStockDesc}</span>
                 </div>
               </label>
             </div>
@@ -307,16 +308,16 @@ export default function CatalogFilter({
       )}
 
       {/* Active telemetry results counter */}
-      <div className="flex items-center justify-between text-xs font-mono text-titanium-400 px-1">
+      <div className="flex items-center justify-between text-xs text-titanium-400 px-1">
         <span>
-          SHOWING <strong className="text-titanium-100 font-bold">{totalResults}</strong> SPECIFIED ITEMS
+          {t.filter.showingCount}: <strong className="text-titanium-100 font-bold">{totalResults}</strong>
         </span>
         {activeFilterCount > 0 && (
           <button
             onClick={handleResetFilters}
-            className="text-cyber-cyan hover:underline flex items-center gap-1"
+            className="text-blue-400 hover:underline flex items-center gap-1 text-xs"
           >
-            Clear active filters ({activeFilterCount})
+            {t.filter.clearFilters} ({activeFilterCount})
           </button>
         )}
       </div>

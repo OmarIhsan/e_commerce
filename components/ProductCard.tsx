@@ -6,10 +6,10 @@ import { useCartStore } from "@/lib/cartStore";
 import { useWishlistStore } from "@/lib/wishlistStore";
 import { useCurrencyStore } from "@/lib/currencyStore";
 import { useToast } from "@/components/ToastProvider";
-import { Star, ShoppingBag, Eye, Check, Heart } from "lucide-react";
+import { Star, ShoppingBag, Check, Heart } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { useEcomI18n } from "@/lib/i18n";
 
 interface ProductCardProps {
   product: Product;
@@ -24,8 +24,8 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
   const { success, error, info } = useToast();
   const [isAdding, setIsAdding] = useState(false);
   const [hasJustAdded, setHasJustAdded] = useState(false);
-  const pathname = usePathname();
-  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
+  const { locale, t } = useEcomI18n();
+
   const productHref = `/${locale}/product/${product.sku}`;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
@@ -83,16 +83,16 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {product.discount && product.discount > 0 && (
-            <span className="absolute top-2.5 left-2.5 rounded-md bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
-              -{product.discount}% OFF
+            <span className="absolute top-2.5 start-2.5 rounded-md bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
+              -{product.discount}% {t.card.off}
             </span>
           )}
 
           {/* Wishlist button */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-2.5 right-2.5 p-1.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 transition-colors z-10"
-            title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
+            className="absolute top-2.5 end-2.5 p-1.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 transition-colors z-10"
+            title={isInWishlist ? t.card.removeWishlist : t.card.saveWishlist}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
           </button>
@@ -143,11 +143,13 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             >
               {hasJustAdded ? (
                 <>
-                  <Check className="w-3.5 h-3.5" /> Added
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{t.card.added}</span>
                 </>
               ) : (
                 <>
-                  <ShoppingBag className="w-3.5 h-3.5" /> Add to Cart
+                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <span>{t.card.addToCart}</span>
                 </>
               )}
             </button>
@@ -170,7 +172,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       <div>
         {/* Image Container with overlay triggers */}
         <Link
-          href={`/product/${product.sku}`}
+          href={productHref}
           className="block relative h-64 w-full overflow-hidden bg-titanium-950 border-b border-white/10"
         >
           <img
@@ -180,15 +182,15 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           />
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+          <div className="absolute top-3 start-3 flex flex-col gap-1.5 z-10">
             {product.discount && product.discount > 0 && (
               <span className="rounded-md bg-rose-500 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
-                -{product.discount}% OFF
+                -{product.discount}% {t.card.off}
               </span>
             )}
             {product.flags?.includes("new") && (
               <span className="rounded-md bg-blue-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase shadow-sm">
-                NEW
+                {t.card.newBadge}
               </span>
             )}
           </div>
@@ -196,8 +198,8 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           {/* Wishlist trigger on card */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-3 right-3 p-2 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 hover:scale-110 transition-all z-20"
-            title={isInWishlist ? "Remove from Wishlist" : "Save to Wishlist"}
+            className="absolute top-3 end-3 p-2 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 hover:scale-110 transition-all z-20"
+            title={isInWishlist ? t.card.removeWishlist : t.card.saveWishlist}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
           </button>
@@ -217,7 +219,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           </div>
 
           {/* Title */}
-          <Link href={`/product/${product.sku}`} className="block">
+          <Link href={productHref} className="block">
             <h3 className="font-semibold text-sm text-white group-hover:text-blue-400 transition-colors line-clamp-1">
               {product.name}
             </h3>
@@ -249,14 +251,19 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           disabled={product.inventory <= 0 || isAdding}
           className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40"
           aria-label={`Quick add ${product.name} to cart`}
-          title="Add to Cart"
+          title={t.card.addToCart}
         >
           {hasJustAdded ? (
-            <Check className="w-3.5 h-3.5 text-white" />
+            <>
+              <Check className="w-3.5 h-3.5 text-white" />
+              <span>{t.card.added}</span>
+            </>
           ) : (
-            <ShoppingBag className="w-3.5 h-3.5" />
+            <>
+              <ShoppingBag className="w-3.5 h-3.5" />
+              <span>{t.card.addToCart}</span>
+            </>
           )}
-          <span>Add</span>
         </button>
       </div>
     </motion.div>

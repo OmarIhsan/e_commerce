@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, MessageSquarePlus, Check, Sparkles, X } from "lucide-react";
+import { Star, MessageSquarePlus, X } from "lucide-react";
 import { useToast } from "@/components/ToastProvider";
+import { useEcomI18n } from "@/lib/i18n";
 
 interface ProductReviewModalProps {
   productName: string;
@@ -18,6 +19,7 @@ export default function ProductReviewModal({ productName, sku }: ProductReviewMo
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { success } = useToast();
+  const { t } = useEcomI18n();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,45 +27,45 @@ export default function ProductReviewModal({ productName, sku }: ProductReviewMo
     setTimeout(() => {
       setIsSubmitting(false);
       setIsOpen(false);
-      success("Thank you! Your verified review has been submitted for publication.");
+      success(t.product.reviewSubmitted);
       setName("");
       setTitle("");
       setComment("");
-    }, 600);
+    }, 500);
   };
 
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="px-3.5 py-1.5 rounded-subtle bg-white/5 border border-white/10 hover:border-cyber-cyan/50 hover:bg-white/10 text-xs font-mono text-cyber-cyan transition-all flex items-center gap-1.5 cursor-pointer"
+        className="px-3 py-1.5 rounded-md bg-white/5 border border-white/10 hover:border-blue-500/50 hover:bg-white/10 text-xs text-blue-400 font-medium transition-all flex items-center gap-1.5 cursor-pointer"
       >
         <MessageSquarePlus className="w-3.5 h-3.5" />
-        <span>Write a Review</span>
+        <span>{t.product.writeReview}</span>
       </button>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg p-6 rounded-card glass-panel border border-white/15 bg-titanium-950 text-titanium-100 shadow-2xl space-y-5">
+          <div className="relative w-full max-w-lg p-6 rounded-2xl border border-white/15 bg-titanium-950 text-titanium-100 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div>
-                <span className="text-[10px] font-mono text-cyber-cyan uppercase tracking-wider">
-                  Verified Feedback
+                <span className="text-[10px] text-blue-400 uppercase font-bold tracking-wider">
+                  {t.product.reviews}
                 </span>
-                <h3 className="text-lg font-bold text-titanium-100">Review {productName}</h3>
+                <h3 className="text-base font-bold text-white">{productName}</h3>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-1 rounded-subtle text-titanium-400 hover:text-white transition-colors"
+                className="p-1 rounded-md text-titanium-400 hover:text-white transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4 text-xs font-mono">
+            <form onSubmit={handleSubmit} className="space-y-4 text-xs">
               {/* Star Rating selector */}
               <div className="space-y-1.5">
-                <label className="text-titanium-400 uppercase text-[10px]">Your Rating</label>
+                <label className="text-titanium-300 font-medium">{t.product.yourRating}</label>
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -72,7 +74,7 @@ export default function ProductReviewModal({ productName, sku }: ProductReviewMo
                       onMouseEnter={() => setHoverRating(star)}
                       onMouseLeave={() => setHoverRating(0)}
                       onClick={() => setRating(star)}
-                      className="p-1 transition-transform hover:scale-125 focus:outline-none"
+                      className="p-1 transition-transform hover:scale-110 focus:outline-none"
                     >
                       <Star
                         className={`w-6 h-6 transition-colors ${
@@ -83,8 +85,8 @@ export default function ProductReviewModal({ productName, sku }: ProductReviewMo
                       />
                     </button>
                   ))}
-                  <span className="ml-2 text-xs text-titanium-300 font-bold">
-                    {hoverRating || rating} / 5 Stars
+                  <span className="ms-2 text-xs text-titanium-300 font-bold">
+                    {hoverRating || rating} / 5
                   </span>
                 </div>
               </div>
@@ -92,63 +94,57 @@ export default function ProductReviewModal({ productName, sku }: ProductReviewMo
               {/* Name & Title */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-titanium-400 uppercase text-[10px]">Your Name</label>
+                  <label className="text-titanium-300 font-medium">{t.product.yourName}</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Alex Morgan"
+                    placeholder="Alex Morgan"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 rounded-subtle bg-titanium-900 border border-white/10 text-titanium-100 placeholder:text-titanium-600 focus:outline-none focus:border-cyber-cyan"
+                    className="w-full p-2 rounded-lg titanium-input text-xs"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-titanium-400 uppercase text-[10px]">Headline</label>
+                  <label className="text-titanium-300 font-medium">{t.product.reviewTitle}</label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Outstanding quality"
+                    placeholder={t.product.reviewTitle}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-3 py-2 rounded-subtle bg-titanium-900 border border-white/10 text-titanium-100 placeholder:text-titanium-600 focus:outline-none focus:border-cyber-cyan"
+                    className="w-full p-2 rounded-lg titanium-input text-xs"
                   />
                 </div>
               </div>
 
-              {/* Comments */}
+              {/* Comment */}
               <div className="space-y-1">
-                <label className="text-titanium-400 uppercase text-[10px]">Detailed Review</label>
+                <label className="text-titanium-300 font-medium">{t.product.comment}</label>
                 <textarea
                   required
-                  rows={4}
-                  placeholder="Share your thoughts on fit, durability, texture, and everyday usability..."
+                  rows={3}
+                  placeholder={t.product.comment}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full px-3 py-2 rounded-subtle bg-titanium-900 border border-white/10 text-titanium-100 placeholder:text-titanium-600 focus:outline-none focus:border-cyber-cyan font-sans resize-none"
+                  className="w-full p-2.5 rounded-lg titanium-input text-xs resize-none"
                 />
               </div>
 
-              {/* Submit Action */}
-              <div className="pt-2 flex items-center justify-end gap-3 border-t border-white/10">
+              {/* Submit */}
+              <div className="pt-2 flex justify-end gap-2">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="px-4 py-2 rounded-subtle btn-titanium text-xs font-mono uppercase tracking-wider"
+                  className="px-4 py-2 rounded-lg btn-titanium text-xs font-semibold"
                 >
-                  Cancel
+                  {t.checkout.backStep}
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2 rounded-subtle btn-cyber-primary text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-1.5 shadow-glow"
+                  className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-colors disabled:opacity-50"
                 >
-                  {isSubmitting ? (
-                    "Publishing..."
-                  ) : (
-                    <>
-                      <Check className="w-3.5 h-3.5" /> Submit Review
-                    </>
-                  )}
+                  {isSubmitting ? t.checkout.processing : t.product.submitReview}
                 </button>
               </div>
             </form>

@@ -4,6 +4,7 @@ import { useCartStore } from "@/lib/cartStore";
 import { useCurrencyStore } from "@/lib/currencyStore";
 import { Product } from "@/lib/mockData";
 import { useToast } from "@/components/ToastProvider";
+import { useEcomI18n } from "@/lib/i18n";
 import { ShoppingBag, Check } from "lucide-react";
 import { useState } from "react";
 
@@ -26,6 +27,7 @@ export default function AddToCartButton({
 }: AddToCartButtonProps) {
   const addItem = useCartStore((state) => state.addItem);
   const formatPrice = useCurrencyStore((state) => state.formatPrice);
+  const { t } = useEcomI18n();
   const { success, error } = useToast();
   const [isAdded, setIsAdded] = useState(false);
 
@@ -52,20 +54,20 @@ export default function AddToCartButton({
       type="button"
       onClick={handleAdd}
       disabled={isOutOfStock}
-      className={`rounded-subtle btn-cyber-primary font-mono text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2 shadow-glow disabled:opacity-40 disabled:cursor-not-allowed transition-all ${className}`}
+      className={`rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all min-h-[44px] ${className}`}
     >
       {isAdded ? (
         <>
-          <Check className="w-4 h-4 text-titanium-950" />
-          <span>ADDED TO CART</span>
+          <Check className="w-4 h-4 text-white" />
+          <span>{t.card.added}</span>
         </>
       ) : isOutOfStock ? (
-        <span>OUT OF STOCK</span>
+        <span>{t.card.outOfStock}</span>
       ) : (
         <>
           <ShoppingBag className="w-4 h-4" />
           <span>
-            ADD TO CART
+            {t.card.addToCart}
             {showPrice ? ` • ${formatPrice(product.price * qty)}` : ""}
             {size ? ` (${size})` : ""}
           </span>

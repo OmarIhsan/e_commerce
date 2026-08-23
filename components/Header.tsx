@@ -22,7 +22,8 @@ export default function Header() {
 
   const { locale, t } = useEcomI18n();
   // Derive locale prefix from URL (authoritative)
-  const langPrefix = pathname.startsWith("/ar") ? "ar" : "en";
+  const segments = pathname.split("/");
+  const langPrefix = segments[1] === "ar" ? "ar" : segments[1] === "fr" ? "fr" : "en";
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);

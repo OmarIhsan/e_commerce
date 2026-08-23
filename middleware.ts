@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const LOCALES = ["en", "ar"] as const;
+const LOCALES = ["en", "ar", "fr"] as const;
 type Locale = (typeof LOCALES)[number];
 
 const DEFAULT_LOCALE: Locale = "en";
 
 function getPreferredLocale(request: NextRequest): Locale {
-  const acceptLang = request.headers.get("accept-language") || "";
-  if (acceptLang.toLowerCase().includes("ar")) return "ar";
+  const acceptLang = (request.headers.get("accept-language") || "").toLowerCase();
+  if (acceptLang.includes("ar")) return "ar";
+  if (acceptLang.includes("fr")) return "fr";
   return DEFAULT_LOCALE;
 }
 

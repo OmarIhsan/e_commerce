@@ -12,10 +12,8 @@ import { useEcomI18n } from "@/lib/i18n";
 
 export default function CatalogView() {
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const locale = pathname.split("/")[1] === "ar" ? "ar" : "en";
+  const { locale, t } = useEcomI18n();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const { t } = useEcomI18n();
 
   const query = searchParams.get("q") || undefined;
   const category = searchParams.get("category") || undefined;

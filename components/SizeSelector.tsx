@@ -11,17 +11,17 @@ export default function SizeSelector({
   options = [],
   selected,
   onChange,
-  label = "Select Variant / Size",
+  label = "Select Option",
 }: SizeSelectorProps) {
   if (!options || options.length === 0) return null;
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between text-xs font-mono">
-        <span className="text-titanium-300 uppercase tracking-wider">{label}</span>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-titanium-300 font-medium">{label}</span>
         {selected && (
-          <span className="text-cyber-cyan font-bold">
-            SELECTED: {selected}
+          <span className="text-blue-400 font-bold">
+            {selected}
           </span>
         )}
       </div>
@@ -34,10 +34,10 @@ export default function SizeSelector({
               key={opt}
               type="button"
               onClick={() => onChange(opt)}
-              className={`px-3.5 py-2 rounded-subtle font-mono text-xs transition-all border ${
+              className={`px-3.5 py-2 rounded-lg text-xs transition-all border font-medium ${
                 isSelected
-                  ? "bg-cyber-cyan/20 border-cyber-cyan text-cyber-cyan font-bold shadow-glow"
-                  : "bg-titanium-900/60 border-white/10 text-titanium-300 hover:text-white hover:border-white/30"
+                  ? "bg-blue-600/20 border-blue-500 text-blue-400 font-bold"
+                  : "bg-titanium-900 border-white/10 text-titanium-300 hover:text-white hover:border-white/30"
               }`}
             >
               {opt}
