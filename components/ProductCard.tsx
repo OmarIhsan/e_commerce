@@ -70,12 +70,12 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98 }}
         transition={{ duration: 0.2 }}
-        className="rounded-2xl bg-titanium-900 border border-white/10 p-4 flex flex-col sm:flex-row items-center gap-6 group hover:border-blue-500/40 transition-all shadow-sm"
+        className="rounded-2xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 p-4 flex flex-col sm:flex-row items-center gap-6 group hover:border-blue-500/50 transition-all shadow-xs"
       >
         {/* Thumbnail */}
         <Link
           href={productHref}
-          className="relative w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-titanium-950 shrink-0 border border-white/5"
+          className="relative w-full sm:w-48 h-48 rounded-xl overflow-hidden bg-slate-100 dark:bg-titanium-950 shrink-0 border border-slate-200 dark:border-white/5"
         >
           <img
             src={product.images[0]}
@@ -91,7 +91,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           {/* Wishlist button */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-2.5 end-2.5 p-1.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 transition-colors z-10"
+            className="absolute top-2.5 end-2.5 p-1.5 rounded-full bg-black/50 backdrop-blur-md text-white hover:text-rose-400 transition-colors z-10 cursor-pointer"
             title={isInWishlist ? t.card.removeWishlist : t.card.saveWishlist}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
@@ -101,36 +101,36 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         {/* Content details */}
         <div className="flex-1 min-w-0 flex flex-col justify-between w-full h-full py-1">
           <div>
-            <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs text-titanium-400">
-              <span className="font-semibold text-blue-400 uppercase tracking-wide">
+            <div className="flex flex-wrap items-center gap-2 mb-1.5 text-xs text-slate-500 dark:text-titanium-400">
+              <span className="font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wide">
                 {product.brand}
               </span>
               <span>•</span>
-              <div className="flex items-center gap-1 text-amber-400 font-semibold">
-                <Star className="w-3.5 h-3.5 fill-amber-400" />
+              <div className="flex items-center gap-1 text-amber-500 dark:text-amber-400 font-semibold">
+                <Star className="w-3.5 h-3.5 fill-amber-500 dark:fill-amber-400" />
                 <span>{product.rating.toFixed(1)}</span>
-                <span className="text-titanium-400 font-normal">({product.reviewsCount})</span>
+                <span className="text-slate-500 dark:text-titanium-400 font-normal">({product.reviewsCount})</span>
               </div>
             </div>
 
             <Link href={productHref}>
-              <h3 className="text-base font-bold text-white group-hover:text-blue-400 transition-colors mb-2">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors mb-2">
                 {product.name}
               </h3>
             </Link>
 
-            <p className="text-xs text-titanium-300 line-clamp-2 leading-relaxed mb-3">
+            <p className="text-xs text-slate-600 dark:text-titanium-300 line-clamp-2 leading-relaxed mb-3">
               {product.description}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/5">
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100 dark:border-white/5">
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold text-white">
+              <span className="text-lg font-bold text-slate-900 dark:text-white">
                 {formatPrice(product.price)}
               </span>
               {product.compareAt && (
-                <span className="text-xs text-titanium-500 line-through">
+                <span className="text-xs text-slate-400 dark:text-titanium-500 line-through">
                   {formatPrice(product.compareAt)}
                 </span>
               )}
@@ -139,7 +139,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
             <button
               onClick={handleQuickAdd}
               disabled={product.inventory <= 0 || isAdding}
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-40"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors disabled:opacity-40 cursor-pointer"
             >
               {hasJustAdded ? (
                 <>
@@ -167,13 +167,13 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
-      className="rounded-2xl bg-titanium-900 border border-white/10 overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 transition-all shadow-sm relative"
+      className="rounded-2xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 overflow-hidden flex flex-col justify-between group hover:border-blue-500/50 transition-all shadow-xs relative"
     >
       <div>
         {/* Image Container with overlay triggers */}
         <Link
           href={productHref}
-          className="block relative h-64 w-full overflow-hidden bg-titanium-950 border-b border-white/10"
+          className="block relative h-64 w-full overflow-hidden bg-slate-100 dark:bg-titanium-950 border-b border-slate-200 dark:border-white/10"
         >
           <img
             src={product.images[0]}
@@ -198,7 +198,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
           {/* Wishlist trigger on card */}
           <button
             onClick={handleToggleWishlist}
-            className="absolute top-3 end-3 p-2 rounded-full bg-black/60 backdrop-blur-md text-white hover:text-rose-500 hover:scale-110 transition-all z-20"
+            className="absolute top-3 end-3 p-2 rounded-full bg-black/50 backdrop-blur-md text-white hover:text-rose-400 hover:scale-110 transition-all z-20 cursor-pointer"
             title={isInWishlist ? t.card.removeWishlist : t.card.saveWishlist}
           >
             <Heart className={`w-4 h-4 ${isInWishlist ? "text-rose-500 fill-rose-500" : ""}`} />
@@ -209,37 +209,37 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         <div className="p-4 space-y-2">
           {/* Brand & Rating */}
           <div className="flex items-center justify-between text-xs">
-            <span className="text-blue-400 uppercase tracking-wide font-semibold text-[11px]">
+            <span className="text-blue-600 dark:text-blue-400 uppercase tracking-wide font-semibold text-[11px]">
               {product.brand}
             </span>
-            <div className="flex items-center gap-1 text-amber-400 font-semibold text-xs">
-              <Star className="w-3.5 h-3.5 fill-amber-400" />
+            <div className="flex items-center gap-1 text-amber-500 dark:text-amber-400 font-semibold text-xs">
+              <Star className="w-3.5 h-3.5 fill-amber-500 dark:fill-amber-400" />
               <span>{product.rating.toFixed(1)}</span>
             </div>
           </div>
 
           {/* Title */}
           <Link href={productHref} className="block">
-            <h3 className="font-semibold text-sm text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+            <h3 className="font-semibold text-sm text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
               {product.name}
             </h3>
           </Link>
 
-          <p className="text-xs text-titanium-400 line-clamp-2 leading-relaxed h-8">
+          <p className="text-xs text-slate-600 dark:text-titanium-400 line-clamp-2 leading-relaxed h-8">
             {product.description}
           </p>
         </div>
       </div>
 
       {/* Card Footer */}
-      <div className="px-4 pb-4 pt-2 border-t border-white/5 flex items-center justify-between">
+      <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
         <div className="flex flex-col">
           <div className="flex items-baseline gap-1.5">
-            <span className="text-base font-bold text-white">
+            <span className="text-base font-bold text-slate-900 dark:text-white">
               {formatPrice(product.price)}
             </span>
             {product.compareAt && (
-              <span className="text-xs text-titanium-500 line-through">
+              <span className="text-xs text-slate-400 dark:text-titanium-500 line-through">
                 {formatPrice(product.compareAt)}
               </span>
             )}
@@ -249,7 +249,7 @@ export default function ProductCard({ product, viewMode = "grid" }: ProductCardP
         <button
           onClick={handleQuickAdd}
           disabled={product.inventory <= 0 || isAdding}
-          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40"
+          className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors disabled:opacity-40 cursor-pointer"
           aria-label={`Quick add ${product.name} to cart`}
           title={t.card.addToCart}
         >

@@ -33,7 +33,7 @@ export default function ProductActions({ product }: { product: Product }) {
   };
 
   return (
-    <div className="space-y-6 pt-4 border-t border-white/10">
+    <div className="space-y-6 pt-4 border-t border-slate-200 dark:border-white/10">
       {/* Variant selectors */}
       {colorOptions && (
         <SizeSelector
@@ -56,26 +56,26 @@ export default function ProductActions({ product }: { product: Product }) {
       {/* Quantity + Add to Cart Row */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         {/* Quantity Stepper */}
-        <div className="flex items-center justify-between rounded-lg bg-titanium-900 border border-white/10 px-3 py-2 sm:w-36">
-          <span className="text-xs text-titanium-400 font-medium">{t.product.quantity}</span>
+        <div className="flex items-center justify-between rounded-lg bg-slate-50 dark:bg-titanium-900 border border-slate-300 dark:border-white/10 px-3 py-2 sm:w-36">
+          <span className="text-xs text-slate-500 dark:text-titanium-400 font-medium">{t.product.quantity}</span>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => handleQtyChange(-1)}
               disabled={qty <= 1}
-              className="p-1 text-titanium-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
+              className="p-1 text-slate-400 hover:text-slate-900 dark:text-titanium-400 dark:hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
               aria-label="Decrease quantity"
             >
               <Minus className="w-3.5 h-3.5" />
             </button>
-            <span className="text-xs font-bold text-white w-6 text-center">
+            <span className="text-xs font-bold text-slate-900 dark:text-white w-6 text-center">
               {qty}
             </span>
             <button
               type="button"
               onClick={() => handleQtyChange(1)}
               disabled={qty >= product.inventory}
-              className="p-1 text-titanium-400 hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
+              className="p-1 text-slate-400 hover:text-slate-900 dark:text-titanium-400 dark:hover:text-white disabled:opacity-30 transition-colors cursor-pointer"
               aria-label="Increase quantity"
             >
               <Plus className="w-3.5 h-3.5" />
@@ -96,37 +96,37 @@ export default function ProductActions({ product }: { product: Product }) {
 
       {/* Stock warning pill */}
       {product.inventory > 0 && product.inventory <= 5 && (
-        <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs text-amber-400 flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
+        <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-300 dark:border-amber-500/30 text-xs text-amber-700 dark:text-amber-400 flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full bg-amber-500 animate-ping"></span>
           <span>{t.product.lowStockWarning}</span>
         </div>
       )}
 
       {/* Trust & Dispatch Guarantee Specs */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-        <div className="p-3 rounded-lg bg-titanium-900/60 border border-white/5 flex items-start gap-2.5">
-          <Truck className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-lg bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-start gap-2.5 shadow-xs">
+          <Truck className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
           <div className="text-[11px]">
-            <div className="font-semibold text-white">
+            <div className="font-semibold text-slate-900 dark:text-white">
               {product.price >= FREE_SHIPPING_THRESHOLD ? t.benefits.shippingTitle : t.checkout.standard}
             </div>
-            <div className="text-titanium-400">{t.benefits.shippingDesc}</div>
+            <div className="text-slate-500 dark:text-titanium-400">{t.benefits.shippingDesc}</div>
           </div>
         </div>
 
-        <div className="p-3 rounded-lg bg-titanium-900/60 border border-white/5 flex items-start gap-2.5">
-          <RotateCcw className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-lg bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-start gap-2.5 shadow-xs">
+          <RotateCcw className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
           <div className="text-[11px]">
-            <div className="font-semibold text-white">{t.product.easyReturns}</div>
-            <div className="text-titanium-400">{t.benefits.returnsDesc}</div>
+            <div className="font-semibold text-slate-900 dark:text-white">{t.product.easyReturns}</div>
+            <div className="text-slate-500 dark:text-titanium-400">{t.benefits.returnsDesc}</div>
           </div>
         </div>
 
-        <div className="p-3 rounded-lg bg-titanium-900/60 border border-white/5 flex items-start gap-2.5">
-          <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-lg bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-start gap-2.5 shadow-xs">
+          <ShieldCheck className="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0 mt-0.5" />
           <div className="text-[11px]">
-            <div className="font-semibold text-white">{t.product.verifiedItem}</div>
-            <div className="text-titanium-400">{t.benefits.qualityDesc}</div>
+            <div className="font-semibold text-slate-900 dark:text-white">{t.product.verifiedItem}</div>
+            <div className="text-slate-500 dark:text-titanium-400">{t.benefits.qualityDesc}</div>
           </div>
         </div>
       </div>

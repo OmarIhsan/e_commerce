@@ -199,6 +199,11 @@ export interface EcomTranslations {
     rights: string;
     platform: string;
   };
+  theme: {
+    light: string;
+    dark: string;
+    toggle: string;
+  };
 }
 
 export const ECOM_DICTIONARIES: Record<Locale, EcomTranslations> = {
@@ -401,6 +406,11 @@ export const ECOM_DICTIONARIES: Record<Locale, EcomTranslations> = {
       rights: "All rights reserved.",
       platform: "Built with Next.js",
     },
+    theme: {
+      light: "Light Mode",
+      dark: "Dark Mode",
+      toggle: "Switch theme",
+    },
   },
   ar: {
     localeName: "العربية",
@@ -601,6 +611,11 @@ export const ECOM_DICTIONARIES: Record<Locale, EcomTranslations> = {
       rights: "جميع الحقوق محفوظة.",
       platform: "تم التطوير باستخدام Next.js",
     },
+    theme: {
+      light: "الوضع الفاتح",
+      dark: "الوضع الداكن",
+      toggle: "تغيير المظهر",
+    },
   },
   fr: {
     localeName: "Français",
@@ -800,6 +815,11 @@ export const ECOM_DICTIONARIES: Record<Locale, EcomTranslations> = {
       guaranteeText: "Paiement 100% protégé et retours simples sous 30 jours.",
       rights: "Tous droits réservés.",
       platform: "Créé avec Next.js",
+    },
+    theme: {
+      light: "Mode clair",
+      dark: "Mode sombre",
+      toggle: "Changer de thème",
     },
   },
 };

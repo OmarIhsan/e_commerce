@@ -7,6 +7,7 @@ import { useWishlistStore } from "@/lib/wishlistStore";
 import { useCurrencyStore, CURRENCIES, CurrencyCode } from "@/lib/currencyStore";
 import { useEcomI18n } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ShoppingBag, Search, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -40,9 +41,9 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-titanium-950/95 backdrop-blur-md [-webkit-backdrop-filter:blur(12px)] transition-all">
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-titanium-950/95 backdrop-blur-md transition-colors">
       {/* Top Notification Bar */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[11px] font-medium py-1.5 px-4 text-center">
+      <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 text-white text-[11px] font-medium py-1.5 px-4 text-center">
         <span>{t.topBanner}</span>
       </div>
 
@@ -54,10 +55,10 @@ export default function Header() {
               <ShoppingBag className="h-5 w-5" />
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-bold tracking-tight text-white">
+              <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
                 {t.storeName}
               </span>
-              <span className="text-[10px] text-titanium-400">
+              <span className="text-[10px] text-slate-500 dark:text-titanium-400">
                 {t.storeSubtitle}
               </span>
             </div>
@@ -73,8 +74,8 @@ export default function Header() {
                   href={link.href}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                     isActive
-                      ? "text-blue-400 bg-white/5 font-semibold"
-                      : "text-titanium-300 hover:text-white hover:bg-white/5"
+                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-white/5 font-semibold"
+                      : "text-slate-600 dark:text-titanium-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5"
                   }`}
                 >
                   {link.label}
@@ -86,10 +87,13 @@ export default function Header() {
 
         {/* Right side actions */}
         <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* Theme Toggle (Light / Dark) */}
+          <ThemeToggle />
+
           {/* URL-based Language Toggle */}
           <LanguageToggle
             currentLocale={locale}
-            className="border-white/10 bg-titanium-900 text-titanium-200 hover:border-white/20"
+            className="border-slate-300 dark:border-white/10 bg-white dark:bg-titanium-900 text-slate-700 dark:text-titanium-200 hover:border-slate-400 dark:hover:border-white/20"
           />
 
           {/* Currency Switcher */}
@@ -97,23 +101,23 @@ export default function Header() {
             <select
               value={currency}
               onChange={(e) => setCurrency(e.target.value as CurrencyCode)}
-              className="bg-titanium-900 border border-white/10 text-titanium-200 text-xs rounded-md px-2.5 py-1.5 pe-6 appearance-none hover:border-white/20 focus:outline-none focus:border-blue-500 cursor-pointer transition-colors"
+              className="bg-white dark:bg-titanium-900 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-titanium-200 text-xs rounded-md px-2.5 py-1.5 pe-6 appearance-none hover:border-slate-400 dark:hover:border-white/20 focus:outline-none focus:border-blue-500 cursor-pointer transition-colors"
               title="Select Currency"
               style={{ WebkitAppearance: "none" }}
             >
               {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => (
-                <option key={code} value={code} className="bg-titanium-900 text-titanium-100">
+                <option key={code} value={code} className="bg-white dark:bg-titanium-900 text-slate-800 dark:text-titanium-100">
                   {CURRENCIES[code].label}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute end-2 text-[10px] text-titanium-400">▼</div>
+            <div className="pointer-events-none absolute end-2 text-[10px] text-slate-400 dark:text-titanium-400">▼</div>
           </div>
 
           {/* Wishlist button */}
           <Link
             href={`/${langPrefix}/wishlist`}
-            className="relative flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-titanium-900 text-titanium-300 hover:text-white hover:border-rose-500/50 transition-all"
+            className="relative flex h-9 w-9 items-center justify-center rounded-md border border-slate-300 dark:border-white/10 bg-white dark:bg-titanium-900 text-slate-700 dark:text-titanium-300 hover:text-rose-600 dark:hover:text-white hover:border-rose-400/50 dark:hover:border-rose-500/50 transition-all"
             title="View Wishlist"
           >
             <Heart className={`h-4 w-4 ${wishCount > 0 ? "text-rose-500 fill-rose-500" : ""}`} />
@@ -127,7 +131,7 @@ export default function Header() {
           {/* Search Shortcut */}
           <Link
             href={`/${langPrefix}#catalog`}
-            className="flex h-9 w-9 items-center justify-center rounded-md border border-white/10 bg-titanium-900 text-titanium-300 hover:text-white hover:border-white/20 transition-colors"
+            className="flex h-9 w-9 items-center justify-center rounded-md border border-slate-300 dark:border-white/10 bg-white dark:bg-titanium-900 text-slate-700 dark:text-titanium-300 hover:text-blue-600 dark:hover:text-white hover:border-slate-400 dark:hover:border-white/20 transition-colors"
             title="Search Catalog"
           >
             <Search className="h-4 w-4" />
@@ -136,7 +140,7 @@ export default function Header() {
           {/* Cart trigger button */}
           <button
             onClick={toggleDrawer}
-            className="relative flex h-9 items-center gap-2 rounded-md bg-blue-600 hover:bg-blue-500 px-3.5 text-xs font-semibold text-white transition-all shadow-sm min-w-[44px] min-h-[44px]"
+            className="relative flex h-9 items-center gap-2 rounded-md bg-blue-600 hover:bg-blue-500 px-3.5 text-xs font-semibold text-white transition-all shadow-sm min-w-[44px] min-h-[44px] cursor-pointer"
             aria-label={`Open Cart with ${count} items`}
           >
             <ShoppingBag className="h-4 w-4" />

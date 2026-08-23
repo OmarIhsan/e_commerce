@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { searchProducts } from "@/lib/mockData";
 import CatalogFilter from "@/components/CatalogFilter";
 import ProductCard from "@/components/ProductCard";
@@ -36,13 +36,13 @@ export default function CatalogView() {
   return (
     <div className="space-y-8">
       {/* Real Retail Hero Banner */}
-      <section className="relative rounded-2xl bg-gradient-to-br from-titanium-900 via-titanium-850 to-titanium-900 p-8 sm:p-12 overflow-hidden border border-white/10 shadow-lg">
+      <section className="relative rounded-2xl bg-gradient-to-br from-slate-900 via-slate-850 to-slate-900 dark:from-titanium-900 dark:via-titanium-850 dark:to-titanium-900 p-8 sm:p-12 overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg text-white">
         {/* Subtle decorative glow */}
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl space-y-5">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-xs font-semibold text-blue-300">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{t.hero.badge}</span>
           </div>
@@ -51,7 +51,7 @@ export default function CatalogView() {
             {t.hero.title}
           </h1>
 
-          <p className="text-sm sm:text-base text-titanium-300 leading-relaxed max-w-2xl font-normal">
+          <p className="text-sm sm:text-base text-slate-200 dark:text-titanium-300 leading-relaxed max-w-2xl font-normal">
             {t.hero.subtitle}
           </p>
 
@@ -64,13 +64,13 @@ export default function CatalogView() {
             </Link>
             <Link
               href={`/${locale}?category=women`}
-              className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
+              className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-xs tracking-wide border border-white/20 transition-colors"
             >
               {t.hero.shopWomen}
             </Link>
             <Link
               href={`/${locale}?category=footwear`}
-              className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs tracking-wide border border-white/15 transition-colors"
+              className="px-5 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold text-xs tracking-wide border border-white/20 transition-colors"
             >
               {t.hero.shopFootwear}
             </Link>
@@ -80,43 +80,43 @@ export default function CatalogView() {
 
       {/* Real Retail 4-Pillar Value Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="p-4 rounded-xl bg-titanium-900/60 border border-white/5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+        <div className="p-4 rounded-xl bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-center gap-3 shadow-xs transition-colors">
+          <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <Truck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">{t.benefits.shippingTitle}</h4>
-            <p className="text-[11px] text-titanium-400">{t.benefits.shippingDesc}</p>
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white">{t.benefits.shippingTitle}</h4>
+            <p className="text-[11px] text-slate-500 dark:text-titanium-400">{t.benefits.shippingDesc}</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-titanium-900/60 border border-white/5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+        <div className="p-4 rounded-xl bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-center gap-3 shadow-xs transition-colors">
+          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <RotateCcw className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">{t.benefits.returnsTitle}</h4>
-            <p className="text-[11px] text-titanium-400">{t.benefits.returnsDesc}</p>
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white">{t.benefits.returnsTitle}</h4>
+            <p className="text-[11px] text-slate-500 dark:text-titanium-400">{t.benefits.returnsDesc}</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-titanium-900/60 border border-white/5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0">
+        <div className="p-4 rounded-xl bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-center gap-3 shadow-xs transition-colors">
+          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">{t.benefits.securityTitle}</h4>
-            <p className="text-[11px] text-titanium-400">{t.benefits.securityDesc}</p>
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white">{t.benefits.securityTitle}</h4>
+            <p className="text-[11px] text-slate-500 dark:text-titanium-400">{t.benefits.securityDesc}</p>
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-titanium-900/60 border border-white/5 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0">
+        <div className="p-4 rounded-xl bg-white dark:bg-titanium-900/60 border border-slate-200 dark:border-white/5 flex items-center gap-3 shadow-xs transition-colors">
+          <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-white">{t.benefits.qualityTitle}</h4>
-            <p className="text-[11px] text-titanium-400">{t.benefits.qualityDesc}</p>
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white">{t.benefits.qualityTitle}</h4>
+            <p className="text-[11px] text-slate-500 dark:text-titanium-400">{t.benefits.qualityDesc}</p>
           </div>
         </div>
       </div>
@@ -130,12 +130,12 @@ export default function CatalogView() {
 
       {/* Products Display Grid / List */}
       {products.length === 0 ? (
-        <div className="rounded-2xl bg-titanium-900/40 p-12 text-center space-y-4 border border-white/10">
-          <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 text-titanium-400 mx-auto flex items-center justify-center">
+        <div className="rounded-2xl bg-white dark:bg-titanium-900/40 p-12 text-center space-y-4 border border-slate-200 dark:border-white/10 shadow-xs">
+          <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-titanium-400 mx-auto flex items-center justify-center">
             <ShoppingBag className="w-6 h-6" />
           </div>
-          <h3 className="text-lg font-bold text-white">{t.filter.noProducts}</h3>
-          <p className="text-xs text-titanium-400 max-w-sm mx-auto">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white">{t.filter.noProducts}</h3>
+          <p className="text-xs text-slate-500 dark:text-titanium-400 max-w-sm mx-auto">
             {t.filter.noProductsDesc}
           </p>
           <div className="pt-2">

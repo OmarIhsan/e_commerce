@@ -52,7 +52,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ toast: addToast, success, error, info }}>
       {children}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none px-4 sm:px-0">
+      <div className="fixed bottom-6 end-6 z-50 flex flex-col gap-2 max-w-md w-full pointer-events-none px-4 sm:px-0">
         <AnimatePresence mode="popLayout">
           {toasts.map((t) => (
             <motion.div
@@ -61,17 +61,17 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-soft bg-titanium-900/95 border border-white/10 shadow-glass backdrop-blur-xl"
+              className="pointer-events-auto flex items-center justify-between gap-3 p-4 rounded-xl bg-white/95 dark:bg-titanium-900/95 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl"
             >
               <div className="flex items-center gap-3">
-                {t.type === "success" && <CheckCircle2 className="w-5 h-5 text-cyber-emerald shrink-0" />}
-                {t.type === "error" && <AlertCircle className="w-5 h-5 text-cyber-rose shrink-0" />}
-                {t.type === "info" && <Info className="w-5 h-5 text-cyber-cyan shrink-0" />}
-                <p className="text-sm font-medium text-titanium-100">{t.message}</p>
+                {t.type === "success" && <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />}
+                {t.type === "error" && <AlertCircle className="w-5 h-5 text-rose-500 shrink-0" />}
+                {t.type === "info" && <Info className="w-5 h-5 text-blue-500 shrink-0" />}
+                <p className="text-xs font-semibold text-slate-900 dark:text-titanium-100">{t.message}</p>
               </div>
               <button
                 onClick={() => removeToast(t.id)}
-                className="text-titanium-400 hover:text-white transition-colors p-1"
+                className="text-slate-400 hover:text-slate-700 dark:text-titanium-400 dark:hover:text-white transition-colors p-1 cursor-pointer"
                 aria-label="Dismiss toast"
               >
                 <X className="w-4 h-4" />

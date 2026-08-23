@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import confetti from "canvas-confetti";
 import InvoiceView from "@/components/InvoiceView";
-import { CheckCircle2, Copy, Check, ArrowRight, ArrowLeft, Package, Truck, Sparkles, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Copy, Check, ArrowRight, ArrowLeft, Package, Truck, ShieldCheck } from "lucide-react";
 import { useCurrencyStore } from "@/lib/currencyStore";
 import { useEcomI18n } from "@/lib/i18n";
 
@@ -119,7 +119,7 @@ function ConfirmationContent() {
 
   if (!orderData) {
     return (
-      <div className="py-24 text-center text-xs text-titanium-400">
+      <div className="py-24 text-center text-xs text-slate-400 dark:text-titanium-400">
         Loading...
       </div>
     );
@@ -130,31 +130,31 @@ function ConfirmationContent() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Banner */}
-      <div className="p-8 sm:p-10 rounded-2xl bg-titanium-900 border border-white/10 text-center space-y-4 shadow-xl">
-        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-sm">
+      <div className="p-8 sm:p-10 rounded-2xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 text-center space-y-4 shadow-xl">
+        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-xs">
           <CheckCircle2 className="w-8 h-8" />
         </div>
 
         <div className="space-y-1">
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white">
             {t.confirmation.title}
           </h1>
-          <p className="text-xs sm:text-sm text-titanium-300 max-w-lg mx-auto leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-titanium-300 max-w-lg mx-auto leading-relaxed">
             {t.confirmation.subtitle}
           </p>
         </div>
 
         {/* Order ID Pill */}
         <div className="pt-2 flex items-center justify-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-titanium-950 border border-white/10 text-xs">
-            <span className="text-titanium-400">{t.confirmation.orderId}:</span>
-            <strong className="text-blue-400 font-bold tracking-wider">{orderData.orderId}</strong>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-50 dark:bg-titanium-950 border border-slate-200 dark:border-white/10 text-xs shadow-xs">
+            <span className="text-slate-500 dark:text-titanium-400">{t.confirmation.orderId}:</span>
+            <strong className="text-blue-600 dark:text-blue-400 font-bold tracking-wider">{orderData.orderId}</strong>
             <button
               onClick={handleCopyOrderId}
-              className="p-1 text-titanium-400 hover:text-white transition-colors"
+              className="p-1 text-slate-400 hover:text-slate-700 dark:text-titanium-400 dark:hover:text-white transition-colors cursor-pointer"
               title={hasCopied ? t.confirmation.copied : t.confirmation.copy}
             >
-              {hasCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {hasCopied ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
         </div>
@@ -162,7 +162,7 @@ function ConfirmationContent() {
         <div className="pt-2 flex flex-wrap items-center justify-center gap-4 text-xs">
           <Link
             href={`/${locale}`}
-            className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold flex items-center gap-2 shadow-sm transition-colors"
+            className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold flex items-center gap-2 shadow-sm transition-colors cursor-pointer"
           >
             <span>{t.confirmation.continueShopping}</span>
             <ShopArrow className="w-4 h-4" />
@@ -172,28 +172,28 @@ function ConfirmationContent() {
 
       {/* Summary Details Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-5 rounded-xl bg-titanium-900 border border-white/10 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
-            <Package className="w-4 h-4 text-blue-400" />
+        <div className="p-5 rounded-xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 space-y-2 shadow-xs">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 dark:text-white">
+            <Package className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span>{t.confirmation.itemsOrdered}</span>
           </div>
-          <div className="text-xs text-titanium-300 space-y-1">
+          <div className="text-xs text-slate-600 dark:text-titanium-300 space-y-1">
             {orderData.items.map((i: any) => (
               <div key={i.id} className="flex justify-between">
                 <span className="truncate max-w-[160px]">{i.name}</span>
-                <span className="text-titanium-400">x{i.qty}</span>
+                <span className="text-slate-400 dark:text-titanium-400">x{i.qty}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-titanium-900 border border-white/10 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
-            <Truck className="w-4 h-4 text-emerald-400" />
+        <div className="p-5 rounded-xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 space-y-2 shadow-xs">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 dark:text-white">
+            <Truck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>{t.confirmation.shippingAddress}</span>
           </div>
-          <div className="text-xs text-titanium-300 leading-relaxed">
-            <p className="font-semibold text-white">
+          <div className="text-xs text-slate-600 dark:text-titanium-300 leading-relaxed">
+            <p className="font-semibold text-slate-900 dark:text-white">
               {orderData.shippingAddress.firstName} {orderData.shippingAddress.lastName}
             </p>
             <p>{orderData.shippingAddress.address}</p>
@@ -204,17 +204,17 @@ function ConfirmationContent() {
           </div>
         </div>
 
-        <div className="p-5 rounded-xl bg-titanium-900 border border-white/10 space-y-2">
-          <div className="flex items-center gap-2 text-xs font-semibold text-white">
-            <ShieldCheck className="w-4 h-4 text-amber-400" />
+        <div className="p-5 rounded-xl bg-white dark:bg-titanium-900 border border-slate-200 dark:border-white/10 space-y-2 shadow-xs">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 dark:text-white">
+            <ShieldCheck className="w-4 h-4 text-amber-500 dark:text-amber-400" />
             <span>{t.confirmation.paymentMethod}</span>
           </div>
-          <div className="text-xs text-titanium-300 leading-relaxed space-y-1">
-            <p className="font-semibold text-white">{orderData.paymentMethod}</p>
-            <p className="text-emerald-400 font-semibold">{t.invoice.paid}</p>
-            <div className="pt-2 flex justify-between border-t border-white/5 font-bold text-white">
+          <div className="text-xs text-slate-600 dark:text-titanium-300 leading-relaxed space-y-1">
+            <p className="font-semibold text-slate-900 dark:text-white">{orderData.paymentMethod}</p>
+            <p className="text-emerald-600 dark:text-emerald-400 font-semibold">{t.invoice.paid}</p>
+            <div className="pt-2 flex justify-between border-t border-slate-100 dark:border-white/5 font-bold text-slate-900 dark:text-white">
               <span>{t.cart.total}:</span>
-              <span className="text-blue-400">{formatPrice(orderData.total)}</span>
+              <span className="text-blue-600 dark:text-blue-400">{formatPrice(orderData.total)}</span>
             </div>
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function ConfirmationPage() {
   return (
     <Suspense
       fallback={
-        <div className="py-24 text-center text-xs text-titanium-400">
+        <div className="py-24 text-center text-xs text-slate-400 dark:text-titanium-400">
           Loading confirmation...
         </div>
       }
